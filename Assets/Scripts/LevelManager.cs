@@ -23,21 +23,19 @@ public static class LevelManager
     {
         if (names.Count <= 0)
         {
-            names.Add(1, "Basic movement");
-            maps.Add(1, "XEX\nXOX\nXSX");
-            blocks.Add(1, new Block[]{Block.Move});
-
-            names.Add(2, "Rotate Right");
-            maps.Add(2, "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX");
-            blocks.Add(2, new Block[]{Block.Move, Block.RotateRight});
-
-            names.Add(3, "Long Rotate Right");
-            maps.Add(3, "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE");
-            blocks.Add(3, new Block[]{Block.Move, Block.RotateRight});
-
-            names.Add(4, "Left and Right rotate");
-            maps.Add(4, "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX");
-            blocks.Add(4, new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft});
+            AddLevel(1, "Basic Movement", "XEX\nXOX\nXSX", new Block[]{Block.Move});
+            AddLevel(
+                2, "Rotate Right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX",
+                new Block[]{Block.Move, Block.RotateRight}
+            );
+            AddLevel(
+                3, "Long Rotate Right", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+                new Block[]{Block.Move, Block.RotateRight}
+            );
+            AddLevel(
+                4, "Left and Right rotate", "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX",
+                new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
+            );
         }
     }
 
@@ -74,4 +72,18 @@ public static class LevelManager
     public static string GetNameForID(int sceneID) => names[sceneID];
     public static string GetMapForID(int sceneID) => maps[sceneID];
     public static Block[] GetBlocksForID(int sceneID) => blocks[sceneID];
+
+    /// <summary>
+    /// Convenience function that aids in the adding of levels to the static variables.
+    /// </summary>
+    /// <param name="id">The level's ID as an integer</param>
+    /// <param name="name">A string representation of the level name</param>
+    /// <param name="map">The map as a square, \n seperated string</param>
+    /// <param name="availableBlocks">The list of blocks that are usable on this level</param>
+    private static void AddLevel(int id, string name, string map, Block[] availableBlocks)
+    {
+        names.Add(id, name);
+        maps.Add(id, map);
+        blocks.Add(id, availableBlocks);
+    }
 }
