@@ -34,6 +34,10 @@ public static class LevelManager
             names.Add(3, "Long Rotate Right");
             maps.Add(3, "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE");
             blocks.Add(3, new Block[]{Block.Move, Block.RotateRight});
+
+            names.Add(4, "Left and Right rotate");
+            maps.Add(4, "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX");
+            blocks.Add(4, new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft});
         }
     }
 

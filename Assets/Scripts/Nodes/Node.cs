@@ -7,15 +7,16 @@ using UnityEngine;
 public enum Block
 {
     Move,
-    RotateRight
+    RotateRight,
+    RotateLeft
 }
 public abstract class Node : MonoBehaviour
-{   
+{
     public GameController controller;
     public Node child, parent;
 
     public const float SECONDS_PAUSE = 1.0f;
-    
+
     /// <summary>
     /// Performs the Node specific functionality.
     /// </summary>

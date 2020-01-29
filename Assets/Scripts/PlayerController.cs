@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     public GameController controller;
     public Direction direction = Direction.Up;
     public int coordinateX, coordinateY;
-    
+
     private GameObject startTile;
     private Vector3 targetPosition;
 
@@ -88,6 +88,24 @@ public class PlayerController : MonoBehaviour
                 break;
             case Direction.Right:
                 direction = Direction.Down;
+                break;
+        }
+    }
+
+    public void RotateLeft() {
+        switch(direction)
+        {
+            case Direction.Up:
+                direction = Direction.Left;
+                break;
+            case Direction.Left:
+                direction = Direction.Down;
+                break;
+            case Direction.Down:
+                direction = Direction.Right;
+                break;
+            case Direction.Right:
+                direction = Direction.Up;
                 break;
         }
     }

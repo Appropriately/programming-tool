@@ -183,6 +183,9 @@ public class GameController : MonoBehaviour
             case Block.RotateRight:
                 node.AddComponent<RotateRight>();
                 break;
+            case Block.RotateLeft:
+                node.AddComponent<RotateLeft>();
+                break;
         }
 
         nodes.Add(node);
