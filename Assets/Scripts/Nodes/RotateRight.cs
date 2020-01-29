@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class RotateRight : DraggableNode
 {
-    public override string DisplayName() => "Rotate Right";
-
     public override IEnumerator Run()
     {
         #if UNITY_EDITOR
@@ -20,6 +18,6 @@ public class RotateRight : DraggableNode
             yield return StartCoroutine(child.Run());
         } else {
             HandleEnd();
-        }  
+        }
     }
 }

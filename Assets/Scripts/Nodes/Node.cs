@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 [System.Serializable]
@@ -26,7 +26,7 @@ public abstract class Node : MonoBehaviour
     /// Returns a friendlier name for the particular node.
     /// </summary>
     /// <returns>A String representation of the particular Node</returns>
-    public abstract string DisplayName();
+    public string DisplayName() => Regex.Replace(GetType().Name, "([a-z])([A-Z])", "$1 $2");
 
     public virtual void Start() {
         if (controller is null) {

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Move : DraggableNode
 {
-    public override string DisplayName() => "Move forward";
-
     public override IEnumerator Run()
     {
         #if UNITY_EDITOR
@@ -20,6 +18,6 @@ public class Move : DraggableNode
             yield return StartCoroutine(child.Run());
         } else {
             HandleEnd();
-        }  
+        }
     }
 }

@@ -6,12 +6,10 @@ public class Comment : DraggableNode
 {
     public string comment = "This will not do anything";
 
-    public override string DisplayName() => $"Comment: {comment}";
-
     public override IEnumerator Run()
     {
         #if UNITY_EDITOR
-            Debug.Log(DisplayName());
+            Debug.Log($"{DisplayName()}, comment = {comment}");
         #endif
 
         yield return new WaitForSeconds(SECONDS_PAUSE);
@@ -20,6 +18,6 @@ public class Comment : DraggableNode
             yield return StartCoroutine(child.Run());
         } else {
             HandleEnd();
-        }  
+        }
     }
 }

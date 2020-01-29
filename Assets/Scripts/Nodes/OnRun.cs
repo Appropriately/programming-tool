@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class OnRun : Node
-{  
-    public override string DisplayName() => "Start";
-
+{
     public override IEnumerator Run()
     {
         #if UNITY_EDITOR
@@ -18,6 +16,6 @@ public class OnRun : Node
             yield return StartCoroutine(child.Run());
         } else {
             HandleEnd();
-        }  
+        }
     }
 }

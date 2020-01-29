@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class RotateLeft : DraggableNode
 {
-    public override string DisplayName() => "Rotate Left";
-
     public override IEnumerator Run()
     {
         #if UNITY_EDITOR
