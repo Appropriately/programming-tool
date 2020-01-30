@@ -23,7 +23,7 @@ public static class LevelManager
     {
         if (names.Count <= 0)
         {
-            AddLevel(1, "Basic Movement", "XEX\nXOX\nXSX", new Block[]{Block.Move});
+            AddLevel(1, "Basic Movement", "XEX\nXOX\nXSX", new Block[]{Block.Move, Block.Speak});
             AddLevel(
                 2, "Rotate Right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX",
                 new Block[]{Block.Move, Block.RotateRight}

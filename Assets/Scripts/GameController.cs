@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
 {
     public Node startNode;
     public Button startButton, editButton, nodeButton;
+    public GameObject alert;
 
     private GameObject[] nodeButtons;
     private List<GameObject> nodes;
@@ -185,6 +186,9 @@ public class GameController : MonoBehaviour
                 break;
             case Block.RotateLeft:
                 node.AddComponent<RotateLeft>();
+                break;
+            case Block.Speak:
+                node.AddComponent<Speak>();
                 break;
         }
 

@@ -110,6 +110,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Causes the player to 'speak', used for giving hints and providing information.
+    /// </summary>
+    /// <param name="text">What the player will say</param>
+    /// <param name="duration">How long (in seconds) the message will last for</param>
+    public void Speak(string text, int duration = 5) => StartCoroutine(SpeakCoroutine(text, duration));
+
+    private IEnumerator SpeakCoroutine(string text, int duration)
+    {
+        #if UNITY_EDITOR
+            Debug.Log($"Player said {text}");
+        #endif
+
+        controller.alert.GetComponentInChildren<Text>().text = text;
+        controller.alert.SetActive(true);
+
+        yield return new WaitForSeconds(duration);
+
+        controller.alert.SetActive(false);
+    }
+
     private Vector3 DirectionToVector(Direction direction) {
         switch (direction)
         {

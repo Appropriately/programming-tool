@@ -8,7 +8,8 @@ public enum Block
 {
     Move,
     RotateRight,
-    RotateLeft
+    RotateLeft,
+    Speak
 }
 public abstract class Node : MonoBehaviour
 {
