@@ -509,11 +509,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startNode: {fileID: 1858437911}
   runButton: {fileID: 1689732009}
-  play: {fileID: 396651513394628237, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
-  stop: {fileID: 7926369752899402733, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
+  play: {fileID: -3587288076651818168, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
+  stop: {fileID: 6467156080797400239, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
   editButton: {fileID: 2012221401}
-  edit: {fileID: -4573874201458485967, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
-  test: {fileID: 396651513394628237, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
+  edit: {fileID: 4797955057162105901, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
+  test: {fileID: 8334288349946869757, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
   nodeButton: {fileID: 1314289069}
   alert: {fileID: 371578618}
   player: {fileID: 730590474}
@@ -747,7 +747,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 396651513394628237, guid: 6ef46d63fdb02c849985f56085f814bb, type: 3}
+  m_Sprite: {fileID: -3587288076651818168, guid: 6ef46d63fdb02c849985f56085f814bb,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1208,7 +1209,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -4573874201458485967, guid: 6ef46d63fdb02c849985f56085f814bb,
+  m_Sprite: {fileID: 4797955057162105901, guid: 6ef46d63fdb02c849985f56085f814bb,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
