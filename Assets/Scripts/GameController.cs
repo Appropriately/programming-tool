@@ -6,7 +6,19 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     public Node startNode;
-    public Button startButton, editButton, nodeButton;
+
+    // Run button
+    public Button runButton;
+    public Sprite play, stop;
+    private static readonly Color playColour = Color.green;
+    private static readonly Color stopColour = Color.red;
+
+    // Edit button
+
+    public Button editButton;
+    public Sprite edit, test;
+
+    public Button nodeButton;
     public GameObject alert;
 
     private GameObject[] nodeButtons;
@@ -55,7 +67,7 @@ public class GameController : MonoBehaviour
             }
             nodeButtons = list.ToArray();
 
-            startButton.onClick.AddListener(StartRun);
+            playButton();
             editButton.onClick.AddListener(ToggleMode);
         }
         catch (Exception e)
@@ -158,13 +170,13 @@ public class GameController : MonoBehaviour
 
     private void ToggleMode() {
         if (IsStopped()) {
-            startButton.gameObject.SetActive(false);
-            editButton.GetComponentInChildren<Text>().text = "Test";
+            runButton.gameObject.SetActive(false);
+            editButton.GetComponent<Image>().sprite = test;
             foreach (GameObject button in nodeButtons) button.SetActive(true);
             state = State.Editor;
         } else if (IsInEditor()) {
-            startButton.gameObject.SetActive(true);
-            editButton.GetComponentInChildren<Text>().text = "Edit";
+            runButton.gameObject.SetActive(true);
+            editButton.GetComponent<Image>().sprite = edit;
             foreach (GameObject button in nodeButtons) button.SetActive(false);
             state = State.Stopped;
         }
@@ -196,23 +208,41 @@ public class GameController : MonoBehaviour
     }
 
     private void StartRun() {
-        startButton.onClick.RemoveAllListeners();
+        runButton.onClick.RemoveAllListeners();
         editButton.gameObject.SetActive(false);
         NodeCheck();
-        startButton.GetComponentInChildren<Text>().text = "Reset";
-        startButton.onClick.AddListener(stopRun);
+
+        stopButton();
+
         SetRunning(true);
         StartCoroutine(startNode.Run());
     }
 
-    public void stopRun() {
+    private void stopRun() {
         StopAllCoroutines();
-        startButton.onClick.RemoveAllListeners();
-        startButton.onClick.AddListener(StartRun);
-        startButton.GetComponentInChildren<Text>().text = "Play";
+
+        runButton.onClick.RemoveAllListeners();
+        playButton();
+
         SetRunning(false);
         player.Reset();
         map.Reset();
         editButton.gameObject.SetActive(true);
+    }
+
+    private void playButton()
+    {
+        runButton.onClick.AddListener(StartRun);
+        Image image = runButton.GetComponent<Image>();
+        image.color = playColour;
+        image.sprite = play;
+    }
+
+    private void stopButton()
+    {
+        runButton.onClick.AddListener(stopRun);
+        Image image = runButton.GetComponent<Image>();
+        image.color = stopColour;
+        image.sprite = stop;
     }
  }
