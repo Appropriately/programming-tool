@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -36,6 +37,10 @@ public static class LevelManager
                 4, "Left and Right rotate", "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX",
                 new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
             );
+            AddLevel(
+                5, "Complexity experiment", "OOOOE\nOOOOO\nOOOOO\nOOOOO\nSOOOO",
+                new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
+            );
         }
     }
 
@@ -69,9 +74,31 @@ public static class LevelManager
     public static string GetMap() => GetMapForID(currentScene);
     public static Block[] GetBlocks() => GetBlocksForID(currentScene);
 
+    /// <summary>
+    /// Get the complexity of the currently selected level
+    /// </summary>
+    /// <returns>A float representation of the complexity, from 0 to 1</returns>
+    public static float GetComplexity() => GetComplexityForID(currentScene);
+
     public static string GetNameForID(int sceneID) => names[sceneID];
     public static string GetMapForID(int sceneID) => maps[sceneID];
     public static Block[] GetBlocksForID(int sceneID) => blocks[sceneID];
+
+    /// <summary>
+    /// Given some Scene, use the scene's map to calculate the complexity
+    /// </summary>
+    /// <param name="sceneID">The ID of the scene</param>
+    /// <returns>A float representation of the complexity, from 0 to 1</returns>
+    public static float GetComplexityForID(int sceneID)
+    {
+        string map = GetMapForID(sceneID);
+        float complexity = 0.0f;
+
+        complexity += map.Count(tile => tile == MapController.NORMAL_TILE) * 0.5f;
+        complexity += map.Count(tile => tile == MapController.END_TILE);
+
+        return complexity / (float) map.Count();
+    }
 
     /// <summary>
     /// Convenience function that aids in the adding of levels to the static variables.

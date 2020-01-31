@@ -24,7 +24,9 @@ public class MenuController : MonoBehaviour
     {
         GameObject newButton = Instantiate(button, position, Quaternion.identity);
         newButton.name = name;
-        newButton.GetComponentInChildren<Text>().text = name;
+
+        float complexity = LevelManager.GetComplexityForID(id);
+        newButton.GetComponentInChildren<Text>().text = $"{name} - {ComplexityAsString(complexity)}";
 
         newButton.GetComponent<Button>().onClick.AddListener(delegate { LevelManager.Load(id); });
 
@@ -32,5 +34,16 @@ public class MenuController : MonoBehaviour
         newButton.GetComponent<RectTransform>().position = position;
 
         newButton.SetActive(true);
+    }
+
+    private string ComplexityAsString(float complexity)
+    {
+        if (complexity < 0.3f) {
+            return "Easy";
+        } else if (complexity > 0.7f) {
+            return "Hard";
+        } else {
+            return "Intermediate";
+        }
     }
 }
