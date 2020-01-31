@@ -7,14 +7,13 @@ public class GameController : MonoBehaviour
 {
     public Node startNode;
 
-    // Run button
+    [Header("Run/Stop button")]
     public Button runButton;
     public Sprite play, stop;
     private static readonly Color playColour = Color.green;
     private static readonly Color stopColour = Color.red;
 
-    // Edit button
-
+    [Header("Edit/Test button")]
     public Button editButton;
     public Sprite edit, test;
 
@@ -29,9 +28,8 @@ public class GameController : MonoBehaviour
     public PlayerController player;
     public MapController map;
 
-    private Vector3 playerOriginalPosition;
-    private Vector3 cameraPlayPosition;
-    private Vector3 editorCamera;
+    private Vector3 playCamera, editorCamera;
+    private Quaternion playRotation, editorRotation;
 
     enum State
     {
@@ -80,8 +78,11 @@ public class GameController : MonoBehaviour
     }
 
     public void Update() {
-        Vector3 target = IsInEditor() ? editorCamera : cameraPlayPosition;
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, target, Time.deltaTime * 3.0f);
+        float lerpTime = Time.deltaTime * 3.0f;
+        Vector3 target = IsInEditor() ? editorCamera : playCamera;
+        Quaternion rotation = IsInEditor() ? editorRotation : playRotation;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, target, lerpTime);
+        Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, rotation, lerpTime);
     }
 
     public void SetRunning(bool value) => state = value ? State.Playing : State.Stopped;
@@ -90,14 +91,18 @@ public class GameController : MonoBehaviour
     public bool IsInEditor() => state == State.Editor;
 
 
-    public Vector3 CodeBoundsCentre() {
-        return editorBounds.center;
-    }
-
+    /// <summary>
+    /// Checks whether the given location is within the bounds of the editor.
+    /// </summary>
+    /// <param name="location">The location that needs checking</param>
+    /// <returns>Whether the location is within the editor's bounds</returns>
     public bool ValidLocation(Vector3 location) {
         return editorBounds.Contains(location);
     }
 
+    /// <summary>
+    /// Do a pass of all nodes and ensure that there are no unnecessary connections between nodes.
+    /// </summary>
     public void NodeCheck() {
         foreach (GameObject node in nodes) {
             Node script = node.GetComponent<Node>();
@@ -153,8 +158,15 @@ public class GameController : MonoBehaviour
     /// Adjusts the camera so the editor screen is appropriately setup and the camera is adjusted for portait displays.
     /// </summary>
     private void UpdateCamera() {
-        cameraPlayPosition = Camera.main.transform.position;
-        editorCamera = cameraPlayPosition + new Vector3(0, Camera.main.orthographicSize * 2.0f);
+        Vector3 originalPosition = Camera.main.transform.position;
+        editorCamera = originalPosition + new Vector3(0, Camera.main.orthographicSize * 2.0f);
+        editorRotation = Camera.main.transform.rotation;
+
+        playCamera = Camera.main.transform.position + new Vector3(8.0f, -8.0f);
+        Camera.main.transform.position = playCamera;
+        Camera.main.transform.LookAt(Vector3.zero);
+        playRotation = Camera.main.transform.rotation;
+        Debug.Log(playRotation);
 
         float xOffset = Camera.main.aspect * Camera.main.orthographicSize * 0.8f;
         float yOffset = Camera.main.orthographicSize * 0.8f;
