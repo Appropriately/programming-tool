@@ -175,11 +175,11 @@ public class GameController : MonoBehaviour
         editorCamera = originalPosition + new Vector3(0, Camera.main.orthographicSize * 2.5f);
         editorRotation = Camera.main.transform.rotation;
 
-        playCamera = Camera.main.transform.position + new Vector3(8.0f, -8.0f);
+        playCamera = Camera.main.transform.position + new Vector3(8.0f, -8.5f);
         Camera.main.transform.position = playCamera;
         Camera.main.transform.LookAt(Vector3.zero);
+        Camera.main.transform.Rotate(0, 0, 50.0f);
         playRotation = Camera.main.transform.rotation;
-        Debug.Log(playRotation);
 
         float xOffset = Camera.main.aspect * Camera.main.orthographicSize * 0.8f;
         float yOffset = Camera.main.orthographicSize * 0.8f;
