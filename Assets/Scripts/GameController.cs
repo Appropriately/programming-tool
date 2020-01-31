@@ -172,7 +172,7 @@ public class GameController : MonoBehaviour
         if (Camera.main.aspect < 1.0f) Camera.main.orthographicSize = 10.0f;
 
         Vector3 originalPosition = Camera.main.transform.position;
-        editorCamera = originalPosition + new Vector3(0, Camera.main.orthographicSize * 2.0f);
+        editorCamera = originalPosition + new Vector3(0, Camera.main.orthographicSize * 2.5f);
         editorRotation = Camera.main.transform.rotation;
 
         playCamera = Camera.main.transform.position + new Vector3(8.0f, -8.0f);
