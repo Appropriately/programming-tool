@@ -19,7 +19,7 @@ public abstract class DraggableNode : Node
 
     private void OnMouseUp() {
         if (IsDraggable() && !controller.IsRunning()) {
-            if (controller.ValidLocation(transform.position) is false) Destroy(gameObject);
+            if (controller.ValidLocation(transform.position) is false) controller.RemoveNode(gameObject);
 
             Collider[] closeColliders = Physics.OverlapSphere(gameObject.transform.position, 1.0f);
             foreach (Collider collider in closeColliders) {

@@ -130,6 +130,17 @@ public class GameController : MonoBehaviour
         if (hasWon) LevelManager.GoToMainMenu();
     }
 
+    /// <summary>
+    /// Handles node deletion and removal from the nodes array
+    /// </summary>
+    /// <param name="node">The node that needs to be removed</param>
+    public void RemoveNode(GameObject node)
+    {
+        int index = nodes.FindIndex(i => node.GetInstanceID() == i.GetInstanceID());
+        Destroy(node);
+        if (index >= 0) nodes.RemoveAt(index);
+    }
+
     private GameObject CreateNodeButton(Block block, Vector3 position) {
         GameObject button = Instantiate(nodeButton.gameObject, position, Quaternion.identity);
         button.name = block.ToString();
