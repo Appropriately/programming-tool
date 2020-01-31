@@ -169,6 +169,8 @@ public class GameController : MonoBehaviour
     /// Adjusts the camera so the editor screen is appropriately setup and the camera is adjusted for portait displays.
     /// </summary>
     private void UpdateCamera() {
+        if (Camera.main.aspect < 1.0f) Camera.main.orthographicSize = 10.0f;
+
         Vector3 originalPosition = Camera.main.transform.position;
         editorCamera = originalPosition + new Vector3(0, Camera.main.orthographicSize * 2.0f);
         editorRotation = Camera.main.transform.rotation;
@@ -188,7 +190,6 @@ public class GameController : MonoBehaviour
         yOffset *= 0.9f;
         startNode.transform.position = new Vector2(editorCamera.x - xOffset * 0.9f, editorCamera.y + yOffset);
 
-        if (Camera.main.aspect < 1.0f) Camera.main.orthographicSize = 10.0f;
     }
 
     private void ToggleMode() {
