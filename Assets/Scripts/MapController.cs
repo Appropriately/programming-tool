@@ -115,7 +115,9 @@ public class MapController : MonoBehaviour
         GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Cube);
         tile.name = $"Tile '{character.ToString()}'";
         tile.transform.position = position;
-        tile.transform.localScale *= Scale();
+
+        Vector3 scale = tile.transform.localScale;
+        tile.transform.localScale = new Vector3(scale.x * Scale(), scale.y * Scale(), 0.2f);
         switch (character)
         {
             case START_TILE:

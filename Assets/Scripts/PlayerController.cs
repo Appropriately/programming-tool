@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
     public void Reset() {
         direction = Direction.Up;
-        targetPosition = startTile.transform.position - Vector3.forward;
+        targetPosition = startTile.transform.position - (Vector3.forward * 0.2f);
         gameObject.transform.position = targetPosition;
     }
 
