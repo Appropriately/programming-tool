@@ -105,7 +105,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void NodeCheck()
     {
-        foreach (GameObject node in nodes) node.GetComponent<Node>()?.CheckMissingConnections();
+        foreach (GameObject node in nodes) node.GetComponent<Node>()?.HandleMissingConnections();
     }
 
     /// <summary>

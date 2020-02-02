@@ -38,13 +38,10 @@ public abstract class Node : MonoBehaviour
     /// <summary>
     /// Check's this nodes supposed child and parent and determines whether it should have those connections.
     /// </summary>
-    public virtual void CheckMissingConnections()
+    public virtual void HandleMissingConnections()
     {
-        if (parent && !parent.child) {
-            parent = null;
-        } else if (child && !child.parent) {
-            child = null;
-        }
+        if (parent && parent.child is null) parent = null;
+        if (child && child.parent is null) child = null;
     }
 
     public void HandleEnd() => controller.WinConditionHandling();
