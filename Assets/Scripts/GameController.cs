@@ -103,17 +103,9 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// Do a pass of all nodes and ensure that there are no unnecessary connections between nodes.
     /// </summary>
-    public void NodeCheck() {
-        foreach (GameObject node in nodes) {
-            Node script = node.GetComponent<Node>();
-            if (script) {
-                if (script.parent && !script.parent.child) {
-                    script.parent = null;
-                } else if (script.child && !script.child.parent) {
-                    script.child = null;
-                }
-            }
-        }
+    public void NodeCheck()
+    {
+        foreach (GameObject node in nodes) node.GetComponent<Node>()?.CheckMissingConnections();
     }
 
     /// <summary>
