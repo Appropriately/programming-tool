@@ -7,6 +7,15 @@ public abstract class DraggableNode : Node
 {
     public bool draggable = true;
 
+    /// <summary>
+    /// Checks if the node is draggable and whether the game state is corrected.
+    /// </summary>
+    /// <returns>Whether the particular node is draggable</returns>
+    public bool IsDraggable() => draggable && controller.IsInEditor();
+
+    /// <summary>
+    /// Handle moving the node about.
+    /// </summary>
     public void OnMouseDrag() {
         if (IsDraggable() && !controller.IsRunning()) {
             if (IsAttached()) Disconnect();
@@ -17,7 +26,10 @@ public abstract class DraggableNode : Node
         }
     }
 
-    private void OnMouseUp() {
+    /// <summary>
+    /// Handle connecting a node once it is no longer being dragged about.
+    /// </summary>
+    public void OnMouseUp() {
         if (IsDraggable() && !controller.IsRunning()) {
             if (controller.ValidLocation(transform.position) is false) controller.RemoveNode(gameObject);
 
@@ -36,28 +48,13 @@ public abstract class DraggableNode : Node
 
         if (parent) parent = parent.child = null;
         if (child) child = child.parent = null;
-
-        if (previousChild && previousParent) {
-            PerformSnap(previousParent, previousChild);
-        }
+        if (previousChild && previousParent) PerformSnap(previousParent, previousChild);
 
         controller?.NodeCheck();
     }
 
     private bool PerformSnap(Node top, Node bottom) {
-        if (!top || !bottom) {
-            #if UNITY_EDITOR
-                Debug.Log($"DEBUG::Missing Nodes, top=#{top} and bottom=#{bottom}");
-            #endif
-            return false;
-        }
-
-        if (top.child) {
-            #if UNITY_EDITOR
-                Debug.Log($"DEBUG::Top node (#{top.gameObject.name}) already has a child");
-            #endif
-            return false;
-        }
+        if (!top || !bottom || top.child) return false;
 
         float xCoordinate = top.gameObject.transform.position.x;
         float yCoordinate = top.gameObject.transform.position.y - gameObject.transform.localScale.y;
@@ -76,6 +73,4 @@ public abstract class DraggableNode : Node
 
         return true;
     }
-
-    private bool IsDraggable() => draggable && controller.IsInEditor();
 }
