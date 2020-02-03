@@ -9,7 +9,8 @@ public enum Block
     Move,
     RotateRight,
     RotateLeft,
-    Speak
+    Speak,
+    IfSpaceIsTraversable
 }
 public abstract class Node : MonoBehaviour
 {
@@ -42,6 +43,30 @@ public abstract class Node : MonoBehaviour
     {
         if (parent && parent.child is null) parent = null;
         if (child && child.parent is null) child = null;
+    }
+
+    /// <summary>
+    /// Snaps the given node to this node.
+    /// </summary>
+    /// <param name="node">The node that will be the new child</param>
+    /// <returns>Whether the process was successful or not</returns>
+    public virtual bool Snap(Node node)
+    {
+        if (node is null || node.parent || child) return false;
+
+        float y = gameObject.transform.position.y - gameObject.transform.localScale.y;
+        node.gameObject.transform.position = new Vector3(gameObject.transform.position.x, y);
+
+        node.parent = this;
+        child = node;
+
+        if (node.child) {
+            Node originalChild = node.child;
+            node.child = node.child.parent = null;
+            return node.Snap(originalChild);
+        }
+
+        return true;
     }
 
     public void HandleEnd() => controller.WinConditionHandling();

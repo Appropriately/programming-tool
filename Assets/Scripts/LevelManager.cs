@@ -30,8 +30,8 @@ public static class LevelManager
                 new Block[]{Block.Move, Block.RotateRight}
             );
             AddLevel(
-                3, "Long Rotate Right", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
-                new Block[]{Block.Move, Block.RotateRight}
+                3, "Conditional Test", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+                new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable}
             );
             AddLevel(
                 4, "Left and Right rotate", "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX",

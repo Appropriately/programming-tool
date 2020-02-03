@@ -180,7 +180,7 @@ public class GameController : MonoBehaviour
         );
         xOffset *= 0.9f;
         yOffset *= 0.9f;
-        startNode.transform.position = new Vector2(editorCamera.x - xOffset * 0.9f, editorCamera.y + yOffset);
+        startNode.transform.position = new Vector2(editorCamera.x - xOffset * 0.8f, editorCamera.y + yOffset);
 
     }
 
@@ -217,6 +217,10 @@ public class GameController : MonoBehaviour
                 break;
             case Block.Speak:
                 node.AddComponent<Speak>();
+                break;
+            case Block.IfSpaceIsTraversable:
+                node.AddComponent<IfSpaceIsTraversable>();
+                node.transform.localScale += new Vector3(node.transform.localScale.x, 0);
                 break;
         }
 

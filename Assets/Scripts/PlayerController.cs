@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Direction {
+    Up,
+    Left,
+    Down,
+    Right
+}
+
 public class PlayerController : MonoBehaviour
 {
     private const float MOVEMENT_SPEED = 3.0f;
-
-    public enum Direction {
-        Up,
-        Left,
-        Down,
-        Right
-    }
 
     public GameController controller;
     public Direction direction = Direction.Up;

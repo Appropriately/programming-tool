@@ -36,41 +36,23 @@ public abstract class DraggableNode : Node
             Collider[] closeColliders = Physics.OverlapSphere(gameObject.transform.position, 1.0f);
             foreach (Collider collider in closeColliders) {
                 if (!collider.transform.position.Equals(transform.position)) {
-                    if (PerformSnap(collider.gameObject.GetComponent<Node>(), this)) return;
+                    if (collider.gameObject.GetComponent<Node>().Snap(this)) return;
                 }
             }
         }
     }
 
-    private void Disconnect() {
+    /// <summary>
+    /// Disconnect the node from its parent and child.
+    /// </summary>
+    public virtual void Disconnect() {
         Node previousChild = child;
         Node previousParent = parent;
 
         if (parent) parent = parent.child = null;
         if (child) child = child.parent = null;
-        if (previousChild && previousParent) PerformSnap(previousParent, previousChild);
+        if (previousChild && previousParent) previousParent.Snap(previousChild);
 
         controller?.NodeCheck();
-    }
-
-    private bool PerformSnap(Node top, Node bottom) {
-        if (!top || !bottom || top.child) return false;
-
-        float xCoordinate = top.gameObject.transform.position.x;
-        float yCoordinate = top.gameObject.transform.position.y - gameObject.transform.localScale.y;
-        Vector3 newPosition = new Vector3(xCoordinate, yCoordinate);
-        bottom.transform.position = newPosition;
-
-        top.child = bottom;
-        bottom.parent = top;
-
-        if (bottom.child) {
-            Node nodeOne = bottom;
-            Node nodeTwo = bottom.child;
-            bottom.child = bottom.child.parent = null;
-            return PerformSnap(nodeOne, nodeTwo);
-        }
-
-        return true;
     }
 }
