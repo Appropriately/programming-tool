@@ -17,7 +17,13 @@ public class GameController : MonoBehaviour
     public Button editButton;
     public Sprite edit, test;
 
+    [Header("Buttons")]
+    public Button bin;
+    public Sprite binOpen, binClosed;
+
     public Button nodeButton;
+
+    [Header("Other variables")]
     public GameObject alert;
 
     private GameObject[] nodeButtons;

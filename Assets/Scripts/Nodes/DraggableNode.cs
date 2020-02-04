@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public abstract class DraggableNode : Node
@@ -20,6 +21,10 @@ public abstract class DraggableNode : Node
         if (IsDraggable() && !controller.IsRunning()) {
             if (IsAttached()) Disconnect();
 
+            Image binImage = controller.bin.GetComponent<Image>();
+            binImage.sprite = controller.ValidLocation(transform.position) ? controller.binClosed : controller.binOpen;
+            controller.bin.gameObject.SetActive(true);
+
             float distance_to_screen = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
             Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance_to_screen);
             transform.position = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -30,6 +35,7 @@ public abstract class DraggableNode : Node
     /// Handle connecting a node once it is no longer being dragged about.
     /// </summary>
     public void OnMouseUp() {
+        controller.bin.gameObject.SetActive(false);
         if (IsDraggable() && !controller.IsRunning()) {
             if (controller.ValidLocation(transform.position) is false) controller.RemoveNode(gameObject);
 
