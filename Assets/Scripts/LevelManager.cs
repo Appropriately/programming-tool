@@ -63,7 +63,7 @@ public static class LevelManager
         SceneManager.LoadScene(MAIN_MENU_SCENE_NAME);
     }
 
-    public static void ErrorToMainMenu(string errorMessage) {
+    public static void GoToMainMenu(string errorMessage) {
         error = errorMessage;
         GoToMainMenu();
     }
@@ -102,6 +102,17 @@ public static class LevelManager
         complexity += map.Count(tile => tile == MapController.END_TILE);
 
         return complexity / (float) map.Count();
+    }
+
+    /// <summary>
+    /// Clears the values in the LevelManager
+    /// </summary>
+    public static void Clear()
+    {
+        error = null;
+        names = new Dictionary<int, string>();
+        maps = new Dictionary<int, string>();
+        blocks = new Dictionary<int, Block[]>();
     }
 
     /// <summary>

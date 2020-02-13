@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
-
-public class Speak : DraggableNode
+﻿public class Speak : DraggableNode
 {
     private static readonly string[] comments = {
         "hint_1", "hint_2", "comment_1"

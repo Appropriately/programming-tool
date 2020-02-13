@@ -79,7 +79,7 @@ public class GameController : MonoBehaviour
             #if UNITY_EDITOR
                 Debug.LogError($"{e} Exception caught.");
             #endif
-            LevelManager.ErrorToMainMenu("There was an issue generating the map");
+            LevelManager.GoToMainMenu("There was an issue generating the map");
         }
     }
 

@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
+/// <summary>
+/// Handles map validation, creation and rendering. Contains a collection of helper functions to support map navigation
+/// and location validating.
+/// </summary>
 public class MapController : MonoBehaviour
 {
     public const char START_TILE = 'S';
@@ -15,12 +16,21 @@ public class MapController : MonoBehaviour
     public char[,] map;
     private int startCoordinateX, startCoordinateY;
 
+    /// <summary>
+    /// Given a string map, validates the structure and generates the appropriate map array.
+    /// </summary>
+    /// <param name="stringMap">The string representation of a map, nxn in size seperated by \n</param>
+    /// <returns>Whether the creation was successful or not</returns>
     public bool Create(string stringMap) {
         if (InvalidMap(stringMap)) return false;
         map = StringToMapArray(stringMap);
         return true;
     }
 
+    /// <summary>
+    /// Render the map at the given point.
+    /// </summary>
+    /// <param name="position">The position at which the map will be centred on</param>
     public void Render(Vector3 position) {
         int length = map.GetLength(0);
         float offset = (length * Scale() * 0.5f) + (Scale() * 0.5f);
@@ -35,6 +45,9 @@ public class MapController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets the player's position by placing them at the start coordinates of this map.
+    /// </summary>
     public void Reset() {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players) {

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,8 +41,6 @@ public class PlayerController : MonoBehaviour
         targetPosition = startTile.transform.position - (Vector3.forward * 0.2f);
         gameObject.transform.position = targetPosition;
     }
-
-    public void SetPosition(Vector3 position) => targetPosition = position;
 
     public void MoveForward() {
         int targetX = coordinateX;

@@ -11,7 +11,8 @@ public abstract class Node : MonoBehaviour
     private static float PAUSE_TIME = 0.5f;
 
     /// <summary>
-    /// Performs the Node specific functionality.
+    /// Performs the Node specific functionality, calling upon the NodeFunction function which has specific
+    /// functionality depending on the node.
     /// </summary>
     public IEnumerator Run() {
         #if UNITY_EDITOR
@@ -37,7 +38,7 @@ public abstract class Node : MonoBehaviour
     /// Functionality unique to a particular node, that returns the next node to progress to.
     /// </summary>
     /// <returns>The next node that will be run</returns>
-    public abstract Node NodeFunction();
+    public virtual Node NodeFunction() => child;
 
     /// <summary>
     /// Returns a friendlier name for the particular node.
@@ -103,7 +104,6 @@ public abstract class Node : MonoBehaviour
     public Loop IsInLoop()
     {
         if (parent) {
-            Debug.Log("Checkiiinnnnggg" + DisplayName());
             if (parent.GetType().IsSubclassOf(typeof(Loop))) {
                 Loop cast = (Loop) parent;
                 if (GetInstanceID() == cast.loop.GetInstanceID()) return cast;
