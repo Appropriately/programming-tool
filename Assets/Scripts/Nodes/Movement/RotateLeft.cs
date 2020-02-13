@@ -4,20 +4,9 @@ using UnityEngine;
 
 public class RotateLeft : DraggableNode
 {
-    public override IEnumerator Run()
+    public override Node NodeFunction()
     {
-        #if UNITY_EDITOR
-            Debug.Log(DisplayName());
-        #endif
-
         controller.player.RotateLeft();
-
-        yield return new WaitForSeconds(SECONDS_PAUSE);
-
-        if (child) {
-            yield return StartCoroutine(child.Run());
-        } else {
-            HandleEnd();
-        }
+        return child;
     }
 }

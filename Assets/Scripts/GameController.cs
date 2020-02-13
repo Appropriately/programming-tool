@@ -107,14 +107,6 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// Do a pass of all nodes and ensure that there are no unnecessary connections between nodes.
-    /// </summary>
-    public void NodeCheck()
-    {
-        foreach (GameObject node in nodes) node.GetComponent<Node>()?.HandleMissingConnections();
-    }
-
-    /// <summary>
     /// Iterates through each player and determines whether they have reached an exit. Traditionally called by a Node
     /// when it has no child.
     /// </summary>
@@ -228,6 +220,9 @@ public class GameController : MonoBehaviour
                 node.AddComponent<IfSpaceIsTraversable>();
                 node.transform.localScale += new Vector3(node.transform.localScale.x, 0);
                 break;
+            case Block.WhileNotAtExit:
+                node.AddComponent<WhileNotAtExit>();
+                break;
         }
 
         nodes.Add(node);
@@ -236,7 +231,6 @@ public class GameController : MonoBehaviour
     private void StartRun() {
         runButton.onClick.RemoveAllListeners();
         editButton.gameObject.SetActive(false);
-        NodeCheck();
 
         stopButton();
 
@@ -246,6 +240,7 @@ public class GameController : MonoBehaviour
 
     private void stopRun() {
         StopAllCoroutines();
+        foreach (GameObject node in nodes) node.GetComponent<Node>()?.StopAllCoroutines();
 
         runButton.onClick.RemoveAllListeners();
         playButton();

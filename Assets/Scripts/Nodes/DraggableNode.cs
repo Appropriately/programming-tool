@@ -39,7 +39,7 @@ public abstract class DraggableNode : Node
         if (IsDraggable() && !controller.IsRunning()) {
             if (controller.ValidLocation(transform.position) is false) controller.RemoveNode(gameObject);
 
-            Collider[] closeColliders = Physics.OverlapSphere(gameObject.transform.position, 1.0f);
+            Collider[] closeColliders = Physics.OverlapSphere(gameObject.transform.position, 0.5f);
             foreach (Collider collider in closeColliders) {
                 if (!collider.transform.position.Equals(transform.position)) {
                     if (collider.gameObject.GetComponent<Node>().Snap(this)) return;
@@ -55,10 +55,15 @@ public abstract class DraggableNode : Node
         Node previousChild = child;
         Node previousParent = parent;
 
-        if (parent) parent = parent.child = null;
-        if (child) child = child.parent = null;
-        if (previousChild && previousParent) previousParent.Snap(previousChild);
+        if (parent) {
+            parent = parent.child = null;
+            previousParent.HandleMissingNodes();
+        }
+        if (child) {
+            child = child.parent = null;
+            previousChild.HandleMissingNodes();
+        }
 
-        controller?.NodeCheck();
+        if (previousChild && previousParent) previousParent.Snap(previousChild);
     }
 }

@@ -8,23 +8,11 @@ public class Speak : DraggableNode
         "hint_1", "hint_2", "comment_1"
     };
 
-    public override IEnumerator Run()
+    public override Node NodeFunction()
     {
         System.Random rand = new System.Random();
         string comment = comments[rand.Next(comments.Length)];
-
-        #if UNITY_EDITOR
-            Debug.Log($"{DisplayName()}, comment = {comment}");
-        #endif
-
         controller.player.Speak(comment);
-
-        yield return new WaitForSeconds(SECONDS_PAUSE);
-
-        if (child) {
-            yield return StartCoroutine(child.Run());
-        } else {
-            HandleEnd();
-        }
+        return child;
     }
 }

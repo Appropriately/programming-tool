@@ -1,14 +1,8 @@
-﻿using System.Collections;
-using UnityEngine;
-
-public class IfSpaceIsTraversable : Conditional
+﻿public class IfSpaceIsTraversable : Conditional
 {
-    public override IEnumerator Run()
-    {
-        #if UNITY_EDITOR
-            Debug.Log(DisplayName());
-        #endif
 
+    public override Node NodeFunction()
+    {
         int targetX = controller.player.coordinateX;
         int targetY = controller.player.coordinateY;
         switch (controller.player.direction)
@@ -27,14 +21,6 @@ public class IfSpaceIsTraversable : Conditional
                 break;
         }
 
-        Node next = controller.map.ValidatePosition(targetX, targetY) ? success : failure;
-
-        yield return new WaitForSeconds(SECONDS_PAUSE);
-
-        if (next) {
-            yield return StartCoroutine(next.Run());
-        } else {
-            HandleEnd();
-        }
+        return controller.map.ValidatePosition(targetX, targetY) ? success : failure;
     }
 }

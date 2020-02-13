@@ -30,15 +30,19 @@ public static class LevelManager
                 new Block[]{Block.Move, Block.RotateRight}
             );
             AddLevel(
-                3, "Conditional Test", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
-                new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable}
+                3, "Long boy", "XXXEXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXSXXX",
+                new Block[]{Block.Move, Block.WhileNotAtExit}
             );
             AddLevel(
-                4, "Left and Right rotate", "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX",
+                4, "Conditional Test", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+                new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit}
+            );
+            AddLevel(
+                5, "Left and Right rotate", "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX",
                 new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
             );
             AddLevel(
-                5, "Complexity experiment", "OOOOE\nOOOOO\nOOOOO\nOOOOO\nSOOOO",
+                6, "Complexity experiment", "OOOOE\nOOOOO\nOOOOO\nOOOOO\nSOOOO",
                 new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
             );
         }

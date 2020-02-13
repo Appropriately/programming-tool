@@ -117,6 +117,12 @@ public class PlayerController : MonoBehaviour
     /// <param name="duration">How long (in seconds) the message will last for</param>
     public void Speak(string text, int duration = 5) => StartCoroutine(SpeakCoroutine(text, duration));
 
+    /// <summary>
+    /// Figure out the char that the player is currently at.
+    /// </summary>
+    /// <returns>The char representation of the tile</returns>
+    public char Tile() => controller.map.map[coordinateX, coordinateY];
+
     private IEnumerator SpeakCoroutine(string text, int duration)
     {
         #if UNITY_EDITOR

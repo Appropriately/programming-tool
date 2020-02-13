@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -13,15 +11,12 @@ public abstract class Conditional : DraggableNode
         Failure
     }
 
-    public override void HandleMissingConnections()
-    {
-        if (parent && parent.child is null) parent = null;
-        if (success && success.parent is null) child = null;
-        if (failure && failure.parent is null) child = null;
-    }
-
     public override bool Snap(Node node)
     {
+        #if UNITY_EDITOR
+            Debug.Log($"Trying to connect {node.DisplayName()} to {DisplayName()}");
+        #endif
+
         Condition condition = GetConditionFromPosition(node);
         if (node is null || node.parent || child) return false;
 
@@ -55,13 +50,43 @@ public abstract class Conditional : DraggableNode
         Node previousFailure = failure;
         Node previousParent = parent;
 
-        if (parent) parent = parent.child = null;
-        if (success) success = success.parent = null;
-        if (failure) failure = failure.parent = null;
+        if (parent) {
+            parent = parent.child = null;
+            previousParent.HandleMissingNodes();
+        }
+        if (success) {
+            success = success.parent = null;
+            previousSuccess.HandleMissingNodes();
+        }
+        if (failure) {
+            failure = failure.parent = null;
+            previousFailure.HandleMissingNodes();
+        }
+
         if (previousSuccess && previousParent) previousParent.Snap(previousSuccess);
         if (previousFailure && previousParent) previousParent.Snap(previousFailure);
+    }
 
-        controller?.NodeCheck();
+    public override Node GetLowestNode()
+    {
+        Node lowestSuccess = success?.GetLowestNode();
+        Node lowestFailure = failure?.GetLowestNode();
+
+        if (lowestSuccess is null && lowestFailure is null) {
+            return null;
+        } else if (lowestSuccess is null) {
+            return failure;
+        } else if (lowestFailure is null) {
+            return success;
+        } else {
+            return lowestSuccess.transform.position.y <= lowestFailure.transform.position.y ? success : failure;
+        }
+    }
+
+    public override void HandleMissingNodes()
+    {
+        if (success && success.parent is null) success = null;
+        if (failure && failure.parent is null) failure = null;
     }
 
     /// <summary>
