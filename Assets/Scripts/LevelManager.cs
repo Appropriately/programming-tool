@@ -12,7 +12,7 @@ public static class LevelManager
 
     public static string error = null;
 
-    private static int currentScene = 2;
+    private static int currentScene;
     private static Dictionary<int, string> names = new Dictionary<int, string>();
     private static Dictionary<int, string> maps = new Dictionary<int, string>();
     private static Dictionary<int, Block[]> blocks = new Dictionary<int, Block[]>();
@@ -49,13 +49,13 @@ public static class LevelManager
     }
 
     /// <summary>
-    /// Load the generic scene for all levels and set the appropriate sceneID for convenient information pulling
+    /// Load the generic scene for all levels and set the appropriate id for convenient information pulling
     /// </summary>
-    /// <param name="sceneID">The ID of the scene that needs to be set</param>
-    public static void Load(int sceneID)
+    /// <param name="id">The ID of the scene that needs to be set</param>
+    public static void Load(int id)
     {
         error = null;
-        currentScene = sceneID;
+        currentScene = id;
         SceneManager.LoadScene(SCENE_NAME);
     }
 
@@ -71,7 +71,7 @@ public static class LevelManager
     /// <summary>
     /// Returns a dictionary of information about the Level Manager's registered scenes.
     /// </summary>
-    /// <returns>A dictionary containing the sceneID and the name as a string</returns>
+    /// <returns>A dictionary containing the id and the name as a string</returns>
     public static Dictionary<int, string> GetLevels() => names;
 
     public static string GetName() => GetNameForID(currentScene);
@@ -84,18 +84,18 @@ public static class LevelManager
     /// <returns>A float representation of the complexity, from 0 to 1</returns>
     public static float GetComplexity() => GetComplexityForID(currentScene);
 
-    public static string GetNameForID(int sceneID) => names[sceneID];
-    public static string GetMapForID(int sceneID) => maps[sceneID];
-    public static Block[] GetBlocksForID(int sceneID) => blocks[sceneID];
+    public static string GetNameForID(int id) => names[id];
+    public static string GetMapForID(int id) => maps[id];
+    public static Block[] GetBlocksForID(int id) => blocks[id];
 
     /// <summary>
     /// Given some Scene, use the scene's map to calculate the complexity
     /// </summary>
-    /// <param name="sceneID">The ID of the scene</param>
+    /// <param name="id">The ID of the scene</param>
     /// <returns>A float representation of the complexity, from 0 to 1</returns>
-    public static float GetComplexityForID(int sceneID)
+    public static float GetComplexityForID(int id)
     {
-        string map = GetMapForID(sceneID);
+        string map = GetMapForID(id);
         float complexity = 0.0f;
 
         complexity += map.Count(tile => tile == MapController.NORMAL_TILE) * 0.5f;
