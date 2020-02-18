@@ -136,7 +136,6 @@ public class PlayerController : MonoBehaviour
 
     private Direction StartDirection()
     {
-        Debug.Log($"{controller}, {coordinateX}, {coordinateY}");
         if (controller.map.ValidatePosition(coordinateX + 1, coordinateY)) {
             return Direction.Right;
         } else if (controller.map.ValidatePosition(coordinateX - 1, coordinateY)) {
