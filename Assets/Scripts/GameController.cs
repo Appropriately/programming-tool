@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -74,7 +73,7 @@ public class GameController : MonoBehaviour
             playButton();
             editButton.onClick.AddListener(ToggleMode);
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
             #if UNITY_EDITOR
                 Debug.LogError($"{e} Exception caught.");
@@ -223,6 +222,21 @@ public class GameController : MonoBehaviour
             case Block.WhileNotAtExit:
                 node.AddComponent<WhileNotAtExit>();
                 break;
+        }
+
+        float xOffset = Random.Range(0.01f, 0.05f);
+        float yOffset = Random.Range(0.01f, 0.05f);
+        node.transform.position += new Vector3(xOffset, yOffset);
+
+        Collider[] colliders = Physics.OverlapSphere(node.transform.position, 0.5f);
+        while (colliders.Length >= 2) {
+            foreach (Collider collider in colliders) {
+                if (collider.transform.position.Equals(node.transform.position) is false) {
+                    Vector3 direction = (node.transform.position - collider.transform.position).normalized;
+                    node.transform.position += direction * 0.4f;
+                }
+            }
+            colliders = Physics.OverlapSphere(node.transform.position, 0.5f);
         }
 
         nodes.Add(node);
