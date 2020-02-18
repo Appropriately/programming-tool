@@ -52,9 +52,9 @@ public class MapController : MonoBehaviour
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         foreach (GameObject player in players) {
             PlayerController component = player.GetComponent<PlayerController>();
-            component.Reset();
             component.coordinateX = startCoordinateX;
             component.coordinateY = startCoordinateY;
+            component.Reset();
         }
     }
 

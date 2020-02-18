@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private const float MOVEMENT_SPEED = 3.0f;
 
     public GameController controller;
-    public Direction direction = Direction.Up;
+    public Direction direction;
     public int coordinateX, coordinateY;
 
     private GameObject startTile;
@@ -25,11 +25,11 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Setup() {
-        startTile = GameObject.FindGameObjectWithTag("Respawn");
-        Reset();
         if (controller is null) {
             controller = GameObject.FindGameObjectWithTag("GameController")?.GetComponent<GameController>();
         }
+        startTile = GameObject.FindGameObjectWithTag("Respawn");
+        Reset();
     }
 
     public void Update() {
@@ -37,9 +37,9 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Reset() {
-        direction = Direction.Up;
         targetPosition = startTile.transform.position - (Vector3.forward * 0.2f);
         gameObject.transform.position = targetPosition;
+        direction = StartDirection();
     }
 
     public void MoveForward() {
@@ -132,6 +132,20 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(duration);
 
         controller.alert.SetActive(false);
+    }
+
+    private Direction StartDirection()
+    {
+        Debug.Log($"{controller}, {coordinateX}, {coordinateY}");
+        if (controller.map.ValidatePosition(coordinateX + 1, coordinateY)) {
+            return Direction.Right;
+        } else if (controller.map.ValidatePosition(coordinateX - 1, coordinateY)) {
+            return Direction.Left;
+        } else if (controller.map.ValidatePosition(coordinateX, coordinateY - 1)) {
+            return Direction.Down;
+        } else {
+            return Direction.Up;
+        }
     }
 
     private Vector3 DirectionToVector(Direction direction) {

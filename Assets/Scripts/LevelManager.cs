@@ -45,6 +45,10 @@ public static class LevelManager
                 6, "Complexity experiment", "OOOOE\nOOOOO\nOOOOO\nOOOOO\nSOOOO",
                 new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
             );
+            AddLevel(
+                7, "Direction test", "SOO\nXXO\nEOO",
+                new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
+            );
         }
     }
 
