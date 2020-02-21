@@ -1,26 +1,5 @@
-@startuml Nodes
-abstract class Conditional {
-    + <<override>> Snap(node:Node) : bool
-    + <<override>> Disconnect() : void
-    + <<override>> GetLowestNode() : Node
-    + <<override>> HandleMissingNodes() : void
-}
-DraggableNode <|-- Conditional
-abstract class DraggableNode {
-    + draggable : bool = true
-    + IsDraggable() : bool
-    + OnMouseDrag() : void
-    + OnMouseUp() : void
-    + <<virtual>> Disconnect() : void
-}
-Node <|-- DraggableNode
-abstract class Loop {
-    + <<override>> Snap(node:Node) : bool
-    + <<override>> Disconnect() : void
-    + <<override>> HandleMissingNodes() : void
-    + UpdateSize() : void
-}
-DraggableNode <|-- Loop
+@startuml Node
+skinparam monochrome true
 abstract class Node {
     + Run() : IEnumerator
     + <<virtual>> NodeFunction() : Node
@@ -33,6 +12,49 @@ abstract class Node {
     + IsAttached() : bool
     + IsInLoop() : Loop
 }
+@enduml
+
+@startuml Conditional
+skinparam monochrome true
+abstract class Conditional {
+    + <<override>> Snap(node:Node) : bool
+    + <<override>> Disconnect() : void
+    + <<override>> GetLowestNode() : Node
+    + <<override>> HandleMissingNodes() : void
+}
+@enduml
+
+@startuml DraggableNode
+skinparam monochrome true
+abstract class DraggableNode {
+    + draggable : bool = true
+    + IsDraggable() : bool
+    + OnMouseDrag() : void
+    + OnMouseUp() : void
+    + <<virtual>> Disconnect() : void
+}
+@enduml
+
+@startuml Loop
+skinparam monochrome true
+abstract class Loop {
+    + <<override>> Snap(node:Node) : bool
+    + <<override>> Disconnect() : void
+    + <<override>> HandleMissingNodes() : void
+    + UpdateSize() : void
+}
+@enduml
+
+@startuml Nodes
+skinparam monochrome true
+!include nodes.puml!0
+!include nodes.puml!1
+!include nodes.puml!2
+!include nodes.puml!3
+
+DraggableNode <|-- Conditional
+Node <|-- DraggableNode
+DraggableNode <|-- Loop
 MonoBehaviour <|-- Node
 Node --> "controller" GameController
 class OnRun {
