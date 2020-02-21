@@ -1,0 +1,65 @@
+@startuml Nodes
+abstract class Conditional {
+    + <<override>> Snap(node:Node) : bool
+    + <<override>> Disconnect() : void
+    + <<override>> GetLowestNode() : Node
+    + <<override>> HandleMissingNodes() : void
+}
+DraggableNode <|-- Conditional
+abstract class DraggableNode {
+    + draggable : bool = true
+    + IsDraggable() : bool
+    + OnMouseDrag() : void
+    + OnMouseUp() : void
+    + <<virtual>> Disconnect() : void
+}
+Node <|-- DraggableNode
+abstract class Loop {
+    + <<override>> Snap(node:Node) : bool
+    + <<override>> Disconnect() : void
+    + <<override>> HandleMissingNodes() : void
+    + UpdateSize() : void
+}
+DraggableNode <|-- Loop
+abstract class Node {
+    + Run() : IEnumerator
+    + <<virtual>> NodeFunction() : Node
+    + DisplayName() : string
+    + <<virtual>> Start() : void
+    + <<virtual>> Snap(node:Node) : bool
+    + <<virtual>> GetLowestNode() : Node
+    + <<virtual>> HandleMissingNodes() : void
+    + HandleEnd() : void
+    + IsAttached() : bool
+    + IsInLoop() : Loop
+}
+MonoBehaviour <|-- Node
+Node --> "controller" GameController
+class OnRun {
+}
+Node <|-- OnRun
+class Speak {
+    + <<override>> NodeFunction() : Node
+}
+DraggableNode <|-- Speak
+class IfSpaceIsTraversable {
+    + <<override>> NodeFunction() : Node
+}
+Conditional <|-- IfSpaceIsTraversable
+class WhileNotAtExit {
+    + <<override>> NodeFunction() : Node
+}
+Loop <|-- WhileNotAtExit
+class Move {
+    + <<override>> NodeFunction() : Node
+}
+DraggableNode <|-- Move
+class RotateLeft {
+    + <<override>> NodeFunction() : Node
+}
+DraggableNode <|-- RotateLeft
+class RotateRight {
+    + <<override>> NodeFunction() : Node
+}
+DraggableNode <|-- RotateRight
+@enduml
