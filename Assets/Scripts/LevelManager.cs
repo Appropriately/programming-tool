@@ -30,24 +30,21 @@ public static class LevelManager
                 new Block[]{Block.Move, Block.RotateRight}
             );
             AddLevel(
-                3, "Long boy", "XXXEXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXSXXX",
-                new Block[]{Block.Move, Block.WhileNotAtExit}
-            );
-            AddLevel(
-                4, "Conditional Test", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+                3, "Conditional Test", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
                 new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit}
             );
             AddLevel(
-                5, "Left and Right rotate", "XXXXE\nXXXOO\nXXOOX\nXOOXX\nXSXXX",
-                new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
+                4, "Interact test", "1XX\nOAE\nSXX",
+                new Block[] {
+                    Block.Move, Block.RotateRight, Block.Interact, Block.WhileTraversable, Block.WhileNotAtExit
+                }
             );
             AddLevel(
-                6, "Complexity experiment", "OOOOE\nOOOOO\nOOOOO\nOOOOO\nSOOOO",
-                new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
-            );
-            AddLevel(
-                7, "Direction test", "SOO\nXXO\nEOO",
-                new Block[]{Block.Move, Block.RotateRight, Block.RotateLeft}
+                5, "Interact advanced test", "OOOOO\nAXXXO\nAXEBO\nO1XX2\nSXXXX",
+                new Block[] {
+                    Block.Move, Block.RotateRight, Block.RotateLeft, Block.Interact, Block.IfSpaceIsActivatable,
+                    Block.WhileNotAtExit, Block.WhileTraversable, Block.Speak
+                }
             );
         }
     }
@@ -102,8 +99,14 @@ public static class LevelManager
         string map = GetMapForID(id);
         float complexity = 0.0f;
 
+        complexity += map.Count(tile => tile == MapController.START_TILE);
         complexity += map.Count(tile => tile == MapController.NORMAL_TILE) * 0.5f;
         complexity += map.Count(tile => tile == MapController.END_TILE);
+
+        foreach (char character in "12".ToCharArray())
+            complexity += map.Count(tile => tile == character) * 5.0f;
+
+        complexity += map.Count(tile => tile == 'X') * 0.25f;
 
         return complexity / (float) map.Count();
     }

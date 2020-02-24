@@ -14,12 +14,14 @@ public abstract class Node : MonoBehaviour
     /// Performs the Node specific functionality, calling upon the NodeFunction function which has specific
     /// functionality depending on the node.
     /// </summary>
-    public IEnumerator Run() {
+    public IEnumerator Run()
+    {
         #if UNITY_EDITOR
             Debug.Log($"{DisplayName()}; ID = {gameObject.GetInstanceID()}");
         #endif
 
         Node node = NodeFunction();
+        yield return new WaitForSeconds(PAUSE_TIME);
 
         if (node is null) {
             node = IsInLoop();
@@ -29,7 +31,6 @@ public abstract class Node : MonoBehaviour
                 yield return StartCoroutine(node.Run());
             }
         } else {
-            yield return new WaitForSeconds(PAUSE_TIME);
             yield return StartCoroutine(node.Run());
         }
     }
@@ -105,8 +106,13 @@ public abstract class Node : MonoBehaviour
     {
         if (parent) {
             if (parent.GetType().IsSubclassOf(typeof(Loop))) {
+                Debug.Log($"this = {this.DisplayName()}, parent = {parent.DisplayName()}");
                 Loop cast = (Loop) parent;
-                if (GetInstanceID() == cast.loop.GetInstanceID()) return cast;
+                if (GetInstanceID() == cast.loop.GetInstanceID()) {
+                    return cast;
+                } else {
+                    return cast.IsInLoop();
+                }
             } else {
                 return parent.IsInLoop();
             }

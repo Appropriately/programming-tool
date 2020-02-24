@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -12,8 +14,13 @@ public class MapController : MonoBehaviour
     public const char NORMAL_TILE = 'O';
 
     private const float DEFAULT_SCALE = 1.0f;
+    private static readonly char[] activatableChars = { 'A', 'B' };
+    private static readonly char[] buttonChars = { '1', '2' };
 
     public char[,] map;
+    public List<char> activated = new List<char>();
+    public List<GameObject> activatable;
+
     private int startCoordinateX, startCoordinateY;
 
     /// <summary>
@@ -56,6 +63,9 @@ public class MapController : MonoBehaviour
             component.coordinateY = startCoordinateY;
             component.Reset();
         }
+
+        foreach (GameObject obj in activatable) obj.SetActive(false);
+        activated.Clear();
     }
 
     /// <summary>
@@ -67,12 +77,22 @@ public class MapController : MonoBehaviour
         return DEFAULT_SCALE;
     }
 
-    public bool ValidatePosition(int x, int y) {
-        int length = map.GetLength(0);
-        if (x < 0 || x >= length) return false;
-        if (y < 0 || y >= length) return false;
-        return IsPositionTraversable(x, y);
-    }
+    /// <summary>
+    /// Returns whether the given position is traversable. A tile can be traversable if its not empty or an appropriate
+    /// button has been pressed.
+    /// </summary>
+    /// <param name="x">The x-coordinate to check</param>
+    /// <param name="y">The y-coordinate to check</param>
+    /// <returns>Whether the tile at the position is traversable or not</returns>
+    public bool IsTraversable(int x, int y) => !OutOfBounds(x, y) && IsPositionTraversable(x, y);
+
+    /// <summary>
+    /// Returns whether the given position is an interactable button or not.
+    /// </summary>
+    /// <param name="x">The x-coordinate to check</param>
+    /// <param name="y">The y-coordinate to check</param>
+    /// <returns>Whether the tile at the position is a button or not</returns>
+    public bool IsButton(int x, int y) => !OutOfBounds(x, y) && Array.Exists(buttonChars, e => e == map[x, y]);
 
     /// <summary>
     /// Given coordinates, returns whether the position is traversable.
@@ -89,8 +109,20 @@ public class MapController : MonoBehaviour
             case END_TILE:
                 return true;
             default:
-                return false;
+                return activated.Contains(map[x,y]);
         }
+    }
+
+    /// <summary>
+    /// Returns whether the given coordinates are out of bounds.
+    /// </summary>
+    /// <param name="x">The x-coordinate to check</param>
+    /// <param name="y">The y-coordinate to check</param>
+    /// <returns>Whether coordinates are out of bounds or not.</returns>
+    private bool OutOfBounds(int x, int y)
+    {
+        int length = map.GetLength(0);
+        return x < 0 || x >= length || y < 0 || y >= length;
     }
 
     private char[,] StringToMapArray(string stringMap) {
@@ -137,18 +169,27 @@ public class MapController : MonoBehaviour
                 tile.gameObject.tag = "Respawn";
                 tile.GetComponent<Renderer>().material.color = Color.blue;
                 break;
-
             case NORMAL_TILE:
                 tile.GetComponent<Renderer>().material.color = Color.yellow;
                 break;
-
             case END_TILE:
                 tile.gameObject.tag = "Finish";
                 tile.GetComponent<Renderer>().material.color = Color.red;
                 break;
-
             default:
-                Destroy(tile);
+                if (Array.Exists(activatableChars, e => e == character)) {
+                    tile.GetComponent<Renderer>().material.color = Color.yellow;
+
+                    Activatable component = tile.AddComponent<Activatable>();
+                    component.type = character;
+
+                    activatable.Add(tile);
+                    tile.SetActive(false);
+                } else if (Array.Exists(buttonChars, e => e == character)) {
+                    tile.GetComponent<Renderer>().material.color = Color.cyan;
+                } else {
+                    Destroy(tile);
+                }
                 break;
         }
     }

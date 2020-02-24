@@ -5,5 +5,8 @@ public enum Block
     RotateLeft,
     Speak,
     IfSpaceIsTraversable,
-    WhileNotAtExit
+    IfSpaceIsActivatable,
+    WhileNotAtExit,
+    WhileTraversable,
+    Interact
 }

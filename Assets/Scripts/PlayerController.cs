@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,9 +21,9 @@ public class PlayerController : MonoBehaviour
     private GameObject startTile;
     private Vector3 targetPosition;
 
-    public void Start() {
-        transform.localScale *= (MapController.Scale() * 0.75f);
-    }
+    private Dictionary<char, char> activateChar = new Dictionary<char, char>() { {'1','A'}, {'2','B'} };
+
+    public void Start() => transform.localScale *= (MapController.Scale() * 0.75f);
 
     public void Setup() {
         if (controller is null) {
@@ -43,30 +44,14 @@ public class PlayerController : MonoBehaviour
     }
 
     public void MoveForward() {
-        int targetX = coordinateX;
-        int targetY = coordinateY;
-        switch (direction)
-        {
-            case Direction.Up:
-                targetY++;
-                break;
-            case Direction.Left:
-                targetX--;
-                break;
-            case Direction.Down:
-                targetY--;
-                break;
-            case Direction.Right:
-                targetX++;
-                break;
-        }
-        if (controller.map.ValidatePosition(targetX, targetY)) {
+        var (x, y) = FrontCoordinates();
+        if (controller.map.IsTraversable(x, y)) {
             targetPosition = targetPosition + (DirectionToVector(direction) * MapController.Scale());
-            coordinateX = targetX;
-            coordinateY = targetY;
+            coordinateX = x;
+            coordinateY = y;
         } else {
             #if UNITY_EDITOR
-                Debug.Log($"Position [{targetX},{targetY}] is not a valid position");
+                Debug.Log($"Position [{x},{y}] is not a valid position");
             #endif
         }
     }
@@ -114,11 +99,28 @@ public class PlayerController : MonoBehaviour
     /// <param name="duration">How long (in seconds) the message will last for</param>
     public void Speak(string text, int duration = 5) => StartCoroutine(SpeakCoroutine(text, duration));
 
+    public void Interact()
+    {
+        var (x, y) = FrontCoordinates();
+        if (controller.map.IsButton(x, y)) {
+            controller.map.activated.Add(activateChar[controller.map.map[x,y]]);
+            foreach (GameObject obj in controller.map.activatable) {
+                if (controller.map.activated.Contains(obj.GetComponent<Activatable>().type)) obj.SetActive(true);
+            }
+        }
+    }
+
     /// <summary>
     /// Figure out the char that the player is currently at.
     /// </summary>
     /// <returns>The char representation of the tile</returns>
     public char Tile() => controller.map.map[coordinateX, coordinateY];
+
+    /// <summary>
+    /// Returns the X and Y coordinates ahead of the player's current position
+    /// </summary>
+    /// <returns>The (x, y) coordinates</returns>
+    public (int, int) FrontCoordinates() => CoordinatesAhead(coordinateX, coordinateY);
 
     private IEnumerator SpeakCoroutine(string text, int duration)
     {
@@ -136,11 +138,11 @@ public class PlayerController : MonoBehaviour
 
     private Direction StartDirection()
     {
-        if (controller.map.ValidatePosition(coordinateX + 1, coordinateY)) {
+        if (controller.map.IsTraversable(coordinateX + 1, coordinateY)) {
             return Direction.Right;
-        } else if (controller.map.ValidatePosition(coordinateX - 1, coordinateY)) {
+        } else if (controller.map.IsTraversable(coordinateX - 1, coordinateY)) {
             return Direction.Left;
-        } else if (controller.map.ValidatePosition(coordinateX, coordinateY - 1)) {
+        } else if (controller.map.IsTraversable(coordinateX, coordinateY - 1)) {
             return Direction.Down;
         } else {
             return Direction.Up;
@@ -161,5 +163,27 @@ public class PlayerController : MonoBehaviour
             default:
                 return Vector3.zero;
         }
+    }
+
+    private (int, int) CoordinatesAhead(int x, int y)
+    {
+        int targetX = x;
+        int targetY = y;
+        switch (direction)
+        {
+            case Direction.Up:
+                targetY++;
+                break;
+            case Direction.Left:
+                targetX--;
+                break;
+            case Direction.Down:
+                targetY--;
+                break;
+            case Direction.Right:
+                targetX++;
+                break;
+        }
+        return (targetX, targetY);
     }
 }

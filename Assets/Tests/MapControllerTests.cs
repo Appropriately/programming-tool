@@ -34,13 +34,13 @@ namespace Tests
         // -------------------------------------------------------------------------------------------------------- //
 
         [Test, Description("Test generating a valid map then traversing a valid location")]
-        public void CorrectMapTraversal_ReturnsTrue() => Assert.IsTrue(controller.ValidatePosition(1, 0));
+        public void CorrectMapTraversal_ReturnsTrue() => Assert.IsTrue(controller.IsTraversable(1, 0));
 
         [Test, Description("Test generating a valid map then traversing an invalid location")]
-        public void IncorrectMapTraversal_ReturnsFalse() => Assert.IsFalse(controller.ValidatePosition(0, 0));
+        public void IncorrectMapTraversal_ReturnsFalse() => Assert.IsFalse(controller.IsTraversable(0, 0));
 
         [Test, Description("Test generating a valid map then attempting to access a region outside the array")]
-        public void OutOfBoundsMapTraversal_ReturnsFalse() => Assert.IsFalse(controller.ValidatePosition(-1, -1));
+        public void OutOfBoundsMapTraversal_ReturnsFalse() => Assert.IsFalse(controller.IsTraversable(-1, -1));
 
         // -------------------------------------------------------------------------------------------------------- //
         // Miscellaneous map testing

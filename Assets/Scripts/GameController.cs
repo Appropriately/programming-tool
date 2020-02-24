@@ -219,8 +219,18 @@ public class GameController : MonoBehaviour
                 node.AddComponent<IfSpaceIsTraversable>();
                 node.transform.localScale += new Vector3(node.transform.localScale.x, 0);
                 break;
+            case Block.IfSpaceIsActivatable:
+                node.AddComponent<IfSpaceIsActivatable>();
+                node.transform.localScale += new Vector3(node.transform.localScale.x, 0);
+                break;
             case Block.WhileNotAtExit:
                 node.AddComponent<WhileNotAtExit>();
+                break;
+            case Block.WhileTraversable:
+                node.AddComponent<WhileTraversable>();
+                break;
+            case Block.Interact:
+                node.AddComponent<Interact>();
                 break;
         }
 
