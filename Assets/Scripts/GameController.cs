@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
@@ -20,10 +21,11 @@ public class GameController : MonoBehaviour
     public Button bin;
     public Sprite binOpen, binClosed;
 
-    public Button nodeButton;
+    public GameObject nodeButtonTemplate;
 
     [Header("Other variables")]
     public GameObject alert;
+    public bool isDragging = false;
 
     private GameObject[] nodeButtons;
     private List<GameObject> nodes;
@@ -61,12 +63,12 @@ public class GameController : MonoBehaviour
             nodes = new List<GameObject>{ startNode.gameObject };
 
             template = GenerateTemplate(startNode.gameObject);
-            Vector3 position = nodeButton.gameObject.GetComponent<RectTransform>().position;
+            Vector3 position = nodeButtonTemplate.GetComponent<RectTransform>().position;
             List<GameObject> list = new List<GameObject>();
             foreach (Block block in LevelManager.GetBlocks())
             {
                 list.Add(CreateNodeButton(block, position));
-                position -= new Vector3(0, nodeButton.gameObject.GetComponent<RectTransform>().sizeDelta.y * 1.2f);
+                position -= new Vector3(0, nodeButtonTemplate.GetComponent<RectTransform>().sizeDelta.y * 1.2f);
             }
             nodeButtons = list.ToArray();
 
@@ -131,11 +133,21 @@ public class GameController : MonoBehaviour
     }
 
     private GameObject CreateNodeButton(Block block, Vector3 position) {
-        GameObject button = Instantiate(nodeButton.gameObject, position, Quaternion.identity);
+        GameObject button = Instantiate(nodeButtonTemplate, position, Quaternion.identity);
         button.name = block.ToString();
         button.GetComponentInChildren<Text>().text = block.ToString();
 
-        button.GetComponent<Button>().onClick.AddListener(delegate { DrawCodeBlock(block); });
+        EventTrigger trigger = button.GetComponent<EventTrigger>();
+        EventTrigger.Entry drag = new EventTrigger.Entry();
+        drag.eventID = EventTriggerType.Drag;
+        drag.callback.AddListener( (eventData) => { AddNode(block, true); } );
+
+        EventTrigger.Entry click = new EventTrigger.Entry();
+        click.eventID = EventTriggerType.PointerClick;
+        click.callback.AddListener( (eventData) => { AddNode(block, false); } );
+
+        trigger.triggers.Add(drag);
+        trigger.triggers.Add(click);
 
         button.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
         button.GetComponent<RectTransform>().position = position;
@@ -178,7 +190,6 @@ public class GameController : MonoBehaviour
         xOffset *= 0.9f;
         yOffset *= 0.9f;
         startNode.transform.position = new Vector2(editorCamera.x - xOffset * 0.8f, editorCamera.y + yOffset);
-
     }
 
     private void ToggleMode() {
@@ -195,11 +206,10 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void DrawCodeBlock(Block block) {
+    private GameObject CreateCodeBlock(Block block) {
         GameObject node = Instantiate(template);
         node.name = block.ToString();
         node.GetComponentInChildren<TextMesh>().text = block.ToString().ToLower();
-        node.SetActive(true);
 
         switch (block)
         {
@@ -234,22 +244,25 @@ public class GameController : MonoBehaviour
                 break;
         }
 
-        float xOffset = Random.Range(0.01f, 0.05f);
-        float yOffset = Random.Range(0.01f, 0.05f);
-        node.transform.position += new Vector3(xOffset, yOffset);
+        return node;
+    }
 
-        Collider[] colliders = Physics.OverlapSphere(node.transform.position, 0.5f);
-        while (colliders.Length >= 2) {
-            foreach (Collider collider in colliders) {
-                if (collider.transform.position.Equals(node.transform.position) is false) {
-                    Vector3 direction = (node.transform.position - collider.transform.position).normalized;
-                    node.transform.position += direction * 0.4f;
+    private void AddNode(Block block, bool draggable)
+    {
+        if (isDragging is false) {
+            GameObject obj = CreateCodeBlock(block);
+            if (draggable) {
+                Node node = obj.GetComponent<Node>();
+                node.controller = this;
+                if (node.GetType().IsSubclassOf(typeof(DraggableNode))) {
+                    DraggableNode draggableNode = (DraggableNode) node;
+                    draggableNode.SetDragging(true);
+                    draggableNode.MoveToMouse();
                 }
             }
-            colliders = Physics.OverlapSphere(node.transform.position, 0.5f);
+            obj.SetActive(true);
+            nodes.Add(obj);
         }
-
-        nodes.Add(node);
     }
 
     private void StartRun() {

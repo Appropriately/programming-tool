@@ -106,13 +106,8 @@ public abstract class Node : MonoBehaviour
     {
         if (parent) {
             if (parent.GetType().IsSubclassOf(typeof(Loop))) {
-                Debug.Log($"this = {this.DisplayName()}, parent = {parent.DisplayName()}");
                 Loop cast = (Loop) parent;
-                if (GetInstanceID() == cast.loop.GetInstanceID()) {
-                    return cast;
-                } else {
-                    return cast.IsInLoop();
-                }
+                return GetInstanceID() == cast.loop.GetInstanceID() ? cast : cast.IsInLoop();
             } else {
                 return parent.IsInLoop();
             }
