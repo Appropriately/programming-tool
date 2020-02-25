@@ -1,9 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+
+/// <summary>
+/// A particular type of Node that allows it to be dragged on <c>OnMouseDown</c>,
+/// </summary>
 [System.Serializable]
 public abstract class DraggableNode : Node
 {
+    /// <summary>
+    /// Whether the current node is being dragged or not.
+    /// </summary>
     public bool dragging = false;
 
     /// <summary>
@@ -15,14 +22,13 @@ public abstract class DraggableNode : Node
     public void Update() {
         if (dragging) {
             if (IsDraggable() && Input.GetMouseButton(0)) {
-                Image binImage = controller.bin.GetComponent<Image>();
-                binImage.sprite = controller.ValidLocation(transform.position) ? controller.binClosed : controller.binOpen;
+                controller.CheckAndUpdateBinIcon(transform.position);
                 controller.bin.gameObject.SetActive(true);
-
                 MoveToMouse();
             } else {
                 controller.bin.gameObject.SetActive(false);
-                if (controller.ValidLocation(transform.position) is false) controller.RemoveNode(gameObject);
+                if (controller.ValidLocation(transform.position) is false)
+                    controller.RemoveNode(gameObject);
 
                 Collider[] colliders = Physics.OverlapSphere(transform.position, 0.5f);
                 foreach (Collider collider in colliders) {

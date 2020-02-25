@@ -50,9 +50,9 @@ public static class LevelManager
     }
 
     /// <summary>
-    /// Load the generic scene for all levels and set the appropriate id for convenient information pulling
+    /// Load the generic scene for all levels and set the appropriate global id for convenient information pulling.
     /// </summary>
-    /// <param name="id">The ID of the scene that needs to be set</param>
+    /// <param name="id">The ID of the scene that needs to be loaded.</param>
     public static void Load(int id)
     {
         error = null;
@@ -60,13 +60,13 @@ public static class LevelManager
         SceneManager.LoadScene(SCENE_NAME);
     }
 
-    public static void GoToMainMenu() {
-        SceneManager.LoadScene(MAIN_MENU_SCENE_NAME);
-    }
-
-    public static void GoToMainMenu(string errorMessage) {
+    /// <summary>
+    /// Returns to the Main Menu scene.
+    /// </summary>
+    /// <param name="errorMessage">An optional string that sets the level manager's error flag.</param>
+    public static void GoToMainMenu(string errorMessage = null) {
         error = errorMessage;
-        GoToMainMenu();
+        SceneManager.LoadScene(MAIN_MENU_SCENE_NAME);
     }
 
     /// <summary>
@@ -90,10 +90,11 @@ public static class LevelManager
     public static Block[] GetBlocksForID(int id) => blocks[id];
 
     /// <summary>
-    /// Given some Scene, use the scene's map to calculate the complexity
+    /// Given an <c>id</c> representation some scene, calculate the complexity.
+    /// Complexity depends on a number of factors such as how many buttons are used and the size of the level.
     /// </summary>
-    /// <param name="id">The ID of the scene</param>
-    /// <returns>A float representation of the complexity, from 0 to 1</returns>
+    /// <param name="id">The <c>id</c> of the scene</param>
+    /// <returns>A <c>float</c> representation of the complexity, from 0 to 1</returns>
     public static float GetComplexityForID(int id)
     {
         string map = GetMapForID(id);
@@ -123,12 +124,12 @@ public static class LevelManager
     }
 
     /// <summary>
-    /// Convenience function that aids in the adding of levels to the static variables.
+    /// Convenience function that aids in the adding of levels to the <c>static</c> variables.
     /// </summary>
-    /// <param name="id">The level's ID as an integer</param>
-    /// <param name="name">A string representation of the level name</param>
-    /// <param name="map">The map as a square, \n seperated string</param>
-    /// <param name="availableBlocks">The list of blocks that are usable on this level</param>
+    /// <param name="id">The level's <c>id</c> as an <c>int</c></param>
+    /// <param name="name">A <c>string</c> representation of the level name</param>
+    /// <param name="map">The map as a 'square', <c>"\n"</c> seperated string</param>
+    /// <param name="availableBlocks">An array of <c>Block</c>s that are usable on this level</param>
     private static void AddLevel(int id, string name, string map, Block[] availableBlocks)
     {
         names.Add(id, name);

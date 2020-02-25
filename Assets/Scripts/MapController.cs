@@ -24,10 +24,10 @@ public class MapController : MonoBehaviour
     private int startCoordinateX, startCoordinateY;
 
     /// <summary>
-    /// Given a string map, validates the structure and generates the appropriate map array.
+    /// Given a <c>string</c> representation of a map, validate the structure and generate the appropriate map array.
     /// </summary>
-    /// <param name="stringMap">The string representation of a map, nxn in size seperated by \n</param>
-    /// <returns>Whether the creation was successful or not</returns>
+    /// <param name="stringMap">The <c>string</c> representation of a map, nxn in size seperated by <c>"\n"</c></param>
+    /// <returns>A <c>bool</c> representing whether the creation was successful or not</returns>
     public bool Create(string stringMap) {
         if (InvalidMap(stringMap)) return false;
         map = StringToMapArray(stringMap);
@@ -35,9 +35,9 @@ public class MapController : MonoBehaviour
     }
 
     /// <summary>
-    /// Render the map at the given point.
+    /// Render the map at the given location.
     /// </summary>
-    /// <param name="position">The position at which the map will be centred on</param>
+    /// <param name="position">A <c>Vector3</c> representing the position at which the map will be centred on</param>
     public void Render(Vector3 position) {
         int length = map.GetLength(0);
         float offset = (length * Scale() * 0.5f) + (Scale() * 0.5f);
@@ -53,7 +53,7 @@ public class MapController : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets the player's position by placing them at the start coordinates of this map.
+    /// Resets map related values, such as the player's position and what buttons/tiles have been activated.
     /// </summary>
     public void Reset() {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -71,36 +71,38 @@ public class MapController : MonoBehaviour
     /// <summary>
     /// The scale of items in the scene.
     /// </summary>
-    /// <returns>The appropriate float mutliplier for scaling</returns>
+    /// <returns>The appropriate <c>float</c> mutliplier for scaling</returns>
     public static float Scale() {
         // TODO: Improve the logic here for better scaling
         return DEFAULT_SCALE;
     }
 
     /// <summary>
-    /// Returns whether the given position is traversable. A tile can be traversable if its not empty or an appropriate
-    /// button has been pressed.
+    /// Returns whether the given position is traversable.
+    /// A tile can be traversable if its not empty or an appropriate button has been pressed.
     /// </summary>
     /// <param name="x">The x-coordinate to check</param>
     /// <param name="y">The y-coordinate to check</param>
-    /// <returns>Whether the tile at the position is traversable or not</returns>
-    public bool IsTraversable(int x, int y) => !OutOfBounds(x, y) && IsPositionTraversable(x, y);
+    /// <returns>A <c>bool</c> representation of whether the tile at the position is traversable or not</returns>
+    public bool IsTraversable(int x, int y) => !OutOfBounds(x, y) && IsTileTraversable(x, y);
 
     /// <summary>
     /// Returns whether the given position is an interactable button or not.
     /// </summary>
     /// <param name="x">The x-coordinate to check</param>
     /// <param name="y">The y-coordinate to check</param>
-    /// <returns>Whether the tile at the position is a button or not</returns>
+    /// <returns>A <c>bool</c> representation of whether the tile at the position is a button or not</returns>
     public bool IsButton(int x, int y) => !OutOfBounds(x, y) && Array.Exists(buttonChars, e => e == map[x, y]);
 
     /// <summary>
     /// Given coordinates, returns whether the position is traversable.
+    /// Note that it does not handle issues due the coordinates being out of bounds.
+    /// <seealso cref="MapController.IsTraversable(int, int)"/>
     /// </summary>
     /// <param name="x">X co-ordinate</param>
     /// <param name="y">Y co-ordinate</param>
-    /// <returns>A boolean representing whether it is traversable</returns>
-    public bool IsPositionTraversable(int x, int y)
+    /// <returns>A <c>bool</c> representing whether the tile at the position is traversable</returns>
+    public bool IsTileTraversable(int x, int y)
     {
         switch (map[x, y])
         {
@@ -118,20 +120,27 @@ public class MapController : MonoBehaviour
     /// </summary>
     /// <param name="x">The x-coordinate to check</param>
     /// <param name="y">The y-coordinate to check</param>
-    /// <returns>Whether coordinates are out of bounds or not.</returns>
+    /// <returns>A <c>bool</c> representing whether the coordinates are out of bounds</returns>
     private bool OutOfBounds(int x, int y)
     {
         int length = map.GetLength(0);
         return x < 0 || x >= length || y < 0 || y >= length;
     }
 
+
+    /// <summary>
+    /// Converts a given <c>string</c> map into a char array that can be interpreted by the map controller.
+    /// Map errors aren't checked, so it is recommended you use <see cref="MapController.InvalidMap(string)"/> first.
+    /// </summary>
+    /// <param name="stringMap">A <c>string</c> representation </param>
+    /// <returns>A 2D array of <c>char</c></returns>
     private char[,] StringToMapArray(string stringMap) {
         int length = stringMap.Split('\n').First().Length;
         char[,] array = new char[length, length];
 
         int x = 0, y = length - 1;
         foreach (char character in stringMap) {
-            if (character == 'S') {
+            if (character == START_TILE) {
                 startCoordinateX = x;
                 startCoordinateY = y;
             }
@@ -147,6 +156,11 @@ public class MapController : MonoBehaviour
         return array;
     }
 
+    /// <summary>
+    /// Checks the given map and determines whether it is to the application's specification.
+    /// </summary>
+    /// <param name="stringMap">A <c>string</c> representation </param>
+    /// <returns>A <c>bool</c> representation of whether the map is valid</returns>
     private bool InvalidMap(string stringMap) {
         if (stringMap.ToCharArray().Count(c => c == START_TILE) != 1) return true;
         if (stringMap.ToCharArray().Count(c => c == END_TILE) < 1) return true;
@@ -156,6 +170,13 @@ public class MapController : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Given an appropriate <c>char</c>, instantiate a new tile <c>GameObject</c>.
+    /// The colour, scripts and other characteristics are determined by the given <c>char</c>.
+    /// Unexpected <c>char</c>s will be rendered as nothing.
+    /// </summary>
+    /// <param name="character">The <c>char</c> representation of the tile</param>
+    /// <param name="position">The <c>Vector3</c> location of the newly instantiated tile</param>
     private void CharacterToRenderedTile(char character, Vector3 position) {
         GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Cube);
         tile.name = $"Tile '{character.ToString()}'";

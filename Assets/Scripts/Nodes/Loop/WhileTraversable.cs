@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class WhileTraversable : Loop
+﻿public class WhileTraversable : Loop
 {
     public override Node NodeFunction() {
         var (x, y) = controller.player.FrontCoordinates();

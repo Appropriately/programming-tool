@@ -45,6 +45,9 @@ public class GameController : MonoBehaviour
         Playing
     }
 
+    /// <summary>
+    /// The game's current state.
+    /// </summary>
     private State state = State.Stopped;
 
     public void Start() {
@@ -53,8 +56,7 @@ public class GameController : MonoBehaviour
 
         UpdateCamera();
 
-        try
-        {
+        try {
             map.Create(LevelManager.GetMap());
             map.Render(Vector3.zero);
             player.Setup();
@@ -62,21 +64,18 @@ public class GameController : MonoBehaviour
 
             nodes = new List<GameObject>{ startNode.gameObject };
 
-            template = GenerateTemplate(startNode.gameObject);
+            template = GenerateTemplateNode();
             Vector3 position = nodeButtonTemplate.GetComponent<RectTransform>().position;
             List<GameObject> list = new List<GameObject>();
-            foreach (Block block in LevelManager.GetBlocks())
-            {
+            foreach (Block block in LevelManager.GetBlocks()) {
                 list.Add(CreateNodeButton(block, position));
                 position -= new Vector3(0, nodeButtonTemplate.GetComponent<RectTransform>().sizeDelta.y * 1.2f);
             }
             nodeButtons = list.ToArray();
 
-            playButton();
+            SetupPlayButton();
             editButton.onClick.AddListener(ToggleMode);
-        }
-        catch (System.Exception e)
-        {
+        } catch (System.Exception e) {
             #if UNITY_EDITOR
                 Debug.LogError($"{e} Exception caught.");
             #endif
@@ -111,7 +110,8 @@ public class GameController : MonoBehaviour
     /// Iterates through each player and determines whether they have reached an exit. Traditionally called by a Node
     /// when it has no child.
     /// </summary>
-    public void WinConditionHandling() {
+    public void WinConditionHandling()
+    {
         bool hasWon = true;
         foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
             PlayerController component = player.GetComponent<PlayerController>();
@@ -122,9 +122,9 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles node deletion and removal from the nodes array
+    /// Handles <c>Node</c> deletion and removal from the nodes array.
     /// </summary>
-    /// <param name="node">The node that needs to be removed</param>
+    /// <param name="node">The <c>Node</c> that needs to be removed</param>
     public void RemoveNode(GameObject node)
     {
         int index = nodes.FindIndex(i => node.GetInstanceID() == i.GetInstanceID());
@@ -132,7 +132,25 @@ public class GameController : MonoBehaviour
         if (index >= 0) nodes.RemoveAt(index);
     }
 
-    private GameObject CreateNodeButton(Block block, Vector3 position) {
+    /// <summary>
+    /// Given a position, determines whether the bin icon should be shown open or closed.
+    /// </summary>
+    /// <param name="position">The position vector that should be checked</param>
+    public void CheckAndUpdateBinIcon(Vector3 position)
+    {
+        Image binImage = bin.GetComponent<Image>();
+        binImage.sprite = ValidLocation(position) ? binClosed : binOpen;
+    }
+
+    /// <summary>
+    /// Creates a button responsible for generating new nodes for the given <c>Block</c>.
+    /// Sets up the appropriate events that will need to fire.
+    /// </summary>
+    /// <param name="block">The <c>Block</c> that the button will be expected to create</param>
+    /// <param name="position">The <c>Vector3</c> position of the new button</param>
+    /// <returns>The button as a <c>GameObject</c></returns>
+    private GameObject CreateNodeButton(Block block, Vector3 position)
+    {
         GameObject button = Instantiate(nodeButtonTemplate, position, Quaternion.identity);
         button.name = block.ToString();
         button.GetComponentInChildren<Text>().text = block.ToString();
@@ -154,22 +172,24 @@ public class GameController : MonoBehaviour
         return button;
     }
 
-    private GameObject GenerateTemplate(GameObject node) {
+    private GameObject GenerateTemplateNode()
+    {
         float xOffset = startNode.transform.localScale.x * 3f;
-        GameObject temp = Instantiate(node, editorBounds.center, Quaternion.identity);
+        GameObject node = Instantiate(startNode.gameObject, editorBounds.center, Quaternion.identity);
 
-        temp.SetActive(false);
-        temp.name = "template";
+        node.SetActive(false);
+        node.name = "template";
 
-        DestroyImmediate(temp.GetComponent<OnRun>());
+        DestroyImmediate(node.GetComponent<OnRun>());
 
-        return temp;
+        return node;
     }
 
     /// <summary>
     /// Adjusts the camera so the editor screen is appropriately setup and the camera is adjusted for portait displays.
     /// </summary>
-    private void UpdateCamera() {
+    private void UpdateCamera()
+    {
         if (Camera.main.aspect < 1.0f) Camera.main.orthographicSize = 10.0f;
 
         Vector3 originalPosition = Camera.main.transform.position;
@@ -192,7 +212,8 @@ public class GameController : MonoBehaviour
         startNode.transform.position = new Vector2(editorCamera.x - xOffset * 0.8f, editorCamera.y + yOffset);
     }
 
-    private void ToggleMode() {
+    private void ToggleMode()
+    {
         if (IsStopped()) {
             runButton.gameObject.SetActive(false);
             editButton.GetComponent<Image>().sprite = test;
@@ -206,7 +227,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private GameObject CreateCodeBlock(Block block) {
+    private GameObject CreateCodeBlock(Block block)
+    {
         GameObject node = Instantiate(template);
         node.name = block.ToString();
         node.GetComponentInChildren<TextMesh>().text = block.ToString().ToLower();
@@ -265,22 +287,25 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void StartRun() {
+    private void StartRun()
+    {
         runButton.onClick.RemoveAllListeners();
         editButton.gameObject.SetActive(false);
 
-        stopButton();
+        SetupStopButton();
 
         SetRunning(true);
         StartCoroutine(startNode.Run());
     }
 
-    private void stopRun() {
+    private void StopRun()
+    {
         StopAllCoroutines();
+        player.StopAllCoroutines();
         foreach (GameObject node in nodes) node.GetComponent<Node>()?.StopAllCoroutines();
 
         runButton.onClick.RemoveAllListeners();
-        playButton();
+        SetupPlayButton();
 
         SetRunning(false);
         player.Reset();
@@ -288,7 +313,7 @@ public class GameController : MonoBehaviour
         editButton.gameObject.SetActive(true);
     }
 
-    private void playButton()
+    private void SetupPlayButton()
     {
         runButton.onClick.AddListener(StartRun);
         Image image = runButton.GetComponent<Image>();
@@ -296,9 +321,9 @@ public class GameController : MonoBehaviour
         image.sprite = play;
     }
 
-    private void stopButton()
+    private void SetupStopButton()
     {
-        runButton.onClick.AddListener(stopRun);
+        runButton.onClick.AddListener(StopRun);
         Image image = runButton.GetComponent<Image>();
         image.color = stopColour;
         image.sprite = stop;

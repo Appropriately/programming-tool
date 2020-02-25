@@ -2,13 +2,14 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+/// <summary>
+/// An object that can have a child and/or a parent, that allows other <c>Node</c>s to <c>Snap</c> to it.
+/// </summary>
 [System.Serializable]
 public abstract class Node : MonoBehaviour
 {
     public GameController controller;
     public Node child, parent;
-
-    private static float PAUSE_TIME = 0.5f;
 
     /// <summary>
     /// Performs the Node specific functionality, calling upon the NodeFunction function which has specific
@@ -21,7 +22,7 @@ public abstract class Node : MonoBehaviour
         #endif
 
         Node node = NodeFunction();
-        yield return new WaitForSeconds(PAUSE_TIME);
+        yield return new WaitForSeconds(0.5f);
 
         if (node is null) {
             node = IsInLoop();
@@ -42,9 +43,17 @@ public abstract class Node : MonoBehaviour
     public virtual Node NodeFunction() => child;
 
     /// <summary>
-    /// Returns a friendlier name for the particular node.
+    /// Returns a friendlier name for the particular node, based the object's <c>Type</c>.
     /// </summary>
-    /// <returns>A String representation of the particular Node</returns>
+    /// <returns>
+    /// A String representation of the particular Node
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// Node node = this;
+    /// node.DisplayName(); // "Node"
+    /// </code>
+    /// </example>
     public string DisplayName() => Regex.Replace(GetType().Name, "([a-z])([A-Z])", "$1 $2");
 
     public virtual void Start() {
@@ -54,7 +63,8 @@ public abstract class Node : MonoBehaviour
     }
 
     /// <summary>
-    /// Snaps the given node to this node.
+    /// <c>Snap</c>s the given node to this node as a child.
+    /// Handles any instances where the node should not be snapping due to pre-existing connections.
     /// </summary>
     /// <param name="node">The node that will be the new child</param>
     /// <returns>Whether the process was successful or not</returns>
@@ -99,9 +109,11 @@ public abstract class Node : MonoBehaviour
     public bool IsAttached() => child || parent;
 
     /// <summary>
-    /// Determines whether the current node is indented in some form of loop.
+    /// Determines whether the current node is indented in some form of <c>Loop</c>.
     /// </summary>
-    /// <returns>The loop node or 'null'</returns>
+    /// <returns>
+    /// The <c>Loop</c> node or <c>null</c>.
+    /// </returns>
     public Loop IsInLoop()
     {
         if (parent) {

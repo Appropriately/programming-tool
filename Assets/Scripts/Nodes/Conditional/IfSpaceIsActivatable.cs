@@ -1,6 +1,4 @@
-﻿using System;
-
-public class IfSpaceIsActivatable : Conditional
+﻿public class IfSpaceIsActivatable : Conditional
 {
 
     public override Node NodeFunction()

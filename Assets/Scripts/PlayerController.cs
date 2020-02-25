@@ -99,6 +99,10 @@ public class PlayerController : MonoBehaviour
     /// <param name="duration">How long (in seconds) the message will last for</param>
     public void Speak(string text, int duration = 5) => StartCoroutine(SpeakCoroutine(text, duration));
 
+    /// <summary>
+    /// "Interacts" with the space in front of the player.
+    /// If the space contains a button, the corresponding tiles are made traversable.
+    /// </summary>
     public void Interact()
     {
         var (x, y) = FrontCoordinates();

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class WhileNotAtExit : Loop
+﻿public class WhileNotAtExit : Loop
 {
     public override Node NodeFunction() {
         if (controller.player.Tile() == MapController.END_TILE) {
