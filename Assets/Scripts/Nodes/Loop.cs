@@ -14,7 +14,7 @@ public abstract class Loop : DraggableNode
     public override bool Snap(Node node)
     {
         #if UNITY_EDITOR
-            Debug.Log($"Trying to connect {node.DisplayName()} to {DisplayName()}");
+            Debug.Log($"Trying to connect {node.DisplayName} to {DisplayName}");
         #endif
 
         if (node is null || node.parent) return false;
@@ -25,7 +25,6 @@ public abstract class Loop : DraggableNode
 
         float offset = transform.localScale.x * 0.2f;
         float x = transform.position.x + (option == Option.Loop ? offset : 0);
-        Debug.Log($"{loop?.GetLowestNode().DisplayName()}");
         float y = (loop is null) ? gameObject.transform.position.y : loop.GetLowestNode().transform.position.y;
         node.gameObject.transform.position = new Vector3(x, y - gameObject.transform.localScale.y);
 
@@ -72,6 +71,8 @@ public abstract class Loop : DraggableNode
         if (child && child.parent is null) child = null;
         if (loop && loop.parent is null) loop = null;
     }
+
+    public override int Count => 1 + (child ? child.Count : 0) + (loop ? loop.Count : 0);
 
     public void UpdateSize()
     {

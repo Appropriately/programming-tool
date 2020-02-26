@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -22,25 +23,29 @@ public static class LevelManager
     /// </summary>
     public static void Seed()
     {
+        #if UNITY_EDITOR
+            PlayerPrefs.DeleteAll();
+        #endif
+
         if (names.Count <= 0)
         {
-            AddLevel(1, "Basic Movement", "XEX\nXOX\nXSX", new Block[]{Block.Move, Block.Speak});
+            AddLevel(1, "basic_movement", "XEX\nXOX\nXSX", new Block[]{Block.Move, Block.Speak});
             AddLevel(
-                2, "Rotate Right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX",
+                2, "rotate_right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX",
                 new Block[]{Block.Move, Block.RotateRight}
             );
             AddLevel(
-                3, "Conditional Test", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+                3, "conditional", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
                 new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit}
             );
             AddLevel(
-                4, "Interact test", "1XX\nOAE\nSXX",
+                4, "interact", "1XX\nOAE\nSXX",
                 new Block[] {
                     Block.Move, Block.RotateRight, Block.Interact, Block.WhileTraversable, Block.WhileNotAtExit
                 }
             );
             AddLevel(
-                5, "Interact advanced test", "OOOOO\nAXXXO\nAXEBO\nO1XX2\nSXXXX",
+                5, "advanced_interact", "OOOOO\nAXXXO\nAXEBO\nO1XX2\nSXXXX",
                 new Block[] {
                     Block.Move, Block.RotateRight, Block.RotateLeft, Block.Interact, Block.IfSpaceIsActivatable,
                     Block.WhileNotAtExit, Block.WhileTraversable, Block.Speak
@@ -110,6 +115,24 @@ public static class LevelManager
         complexity += map.Count(tile => tile == 'X') * 0.25f;
 
         return complexity / (float) map.Count();
+    }
+
+    /// <summary>
+    /// Given the <c>score</c> as an integer, determine if it is higher and store it.
+    /// </summary>
+    /// <param name="score">The score that should be checked and store</param>
+    public static void SetScore(int score) => SetScoreForLevel(currentScene, score);
+
+    /// <summary>
+    /// Given the <c>score</c> as an integer, determine if it is higher and store it.
+    /// Performs the action for a given level.
+    /// </summary>
+    /// <param name="id">The level's <c>id</c></param>
+    /// <param name="score">The score that should be checked and store</param>
+    public static void SetScoreForLevel(int id, int score)
+    {
+        int existingScore = PlayerPrefs.GetInt(names[id], 0);
+        if (existingScore is 0 || score < existingScore) PlayerPrefs.SetInt(names[id], score);
     }
 
     /// <summary>

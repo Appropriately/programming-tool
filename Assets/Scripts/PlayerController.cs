@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private const float MOVEMENT_SPEED = 3.0f;
 
     public GameController controller;
+    public MapController mapController;
     public Direction direction;
     public int coordinateX, coordinateY;
 
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
         if (controller is null) {
             controller = GameObject.FindGameObjectWithTag("GameController")?.GetComponent<GameController>();
         }
+        if (mapController is null) mapController = controller.gameObject.GetComponent<MapController>();
+
         startTile = GameObject.FindGameObjectWithTag("Respawn");
         Reset();
     }
@@ -45,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
     public void MoveForward() {
         var (x, y) = FrontCoordinates();
-        if (controller.map.IsTraversable(x, y)) {
+        if (mapController.IsTraversable(x, y)) {
             targetPosition = targetPosition + (DirectionToVector(direction) * MapController.Scale());
             coordinateX = x;
             coordinateY = y;
@@ -106,19 +109,19 @@ public class PlayerController : MonoBehaviour
     public void Interact()
     {
         var (x, y) = FrontCoordinates();
-        if (controller.map.IsButton(x, y)) {
-            controller.map.activated.Add(activateChar[controller.map.map[x,y]]);
-            foreach (GameObject obj in controller.map.activatable) {
-                if (controller.map.activated.Contains(obj.GetComponent<Activatable>().type)) obj.SetActive(true);
+        if (mapController.IsButton(x, y)) {
+            mapController.activated.Add(activateChar[mapController.map[x,y]]);
+            foreach (GameObject obj in mapController.activatable) {
+                if (mapController.activated.Contains(obj.GetComponent<Activatable>().type)) obj.SetActive(true);
             }
         }
     }
 
     /// <summary>
-    /// Figure out the char that the player is currently at.
+    /// Returns the <c>char</c> at the position the player is currently registered at.
     /// </summary>
-    /// <returns>The char representation of the tile</returns>
-    public char Tile() => controller.map.map[coordinateX, coordinateY];
+    /// <returns>The <c>char</c> representation of the tile</returns>
+    public char Tile() => mapController.map[coordinateX, coordinateY];
 
     /// <summary>
     /// Returns the X and Y coordinates ahead of the player's current position
@@ -142,11 +145,11 @@ public class PlayerController : MonoBehaviour
 
     private Direction StartDirection()
     {
-        if (controller.map.IsTraversable(coordinateX + 1, coordinateY)) {
+        if (mapController.IsTraversable(coordinateX + 1, coordinateY)) {
             return Direction.Right;
-        } else if (controller.map.IsTraversable(coordinateX - 1, coordinateY)) {
+        } else if (mapController.IsTraversable(coordinateX - 1, coordinateY)) {
             return Direction.Left;
-        } else if (controller.map.IsTraversable(coordinateX, coordinateY - 1)) {
+        } else if (mapController.IsTraversable(coordinateX, coordinateY - 1)) {
             return Direction.Down;
         } else {
             return Direction.Up;

@@ -17,11 +17,11 @@ public abstract class DraggableNode : Node
     /// Checks if the node is draggable and whether the game state is corrected.
     /// </summary>
     /// <returns>Whether the particular node is draggable</returns>
-    public bool IsDraggable() => controller.IsInEditor() && (controller.IsRunning() is false);
+    public bool IsDraggable => controller.IsInEditor && (controller.IsRunning is false);
 
     public void Update() {
         if (dragging) {
-            if (IsDraggable() && Input.GetMouseButton(0)) {
+            if (IsDraggable && Input.GetMouseButton(0)) {
                 controller.CheckAndUpdateBinIcon(transform.position);
                 controller.bin.gameObject.SetActive(true);
                 MoveToMouse();
@@ -44,8 +44,8 @@ public abstract class DraggableNode : Node
     }
 
     public void OnMouseDown() {
-        if (IsDraggable()) {
-            if (IsAttached()) Disconnect();
+        if (IsDraggable) {
+            if (IsAttached) Disconnect();
             SetDragging(true);
         }
     }

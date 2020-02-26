@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
     public void Start()
     {
         LevelManager.Seed();
+
         Vector3 position = button.GetComponent<RectTransform>().position;
         float height = button.GetComponent<RectTransform>().sizeDelta.y;
         foreach (KeyValuePair<int, string> level in LevelManager.GetLevels())

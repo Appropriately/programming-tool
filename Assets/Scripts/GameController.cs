@@ -19,12 +19,15 @@ public class GameController : MonoBehaviour
 
     [Header("Buttons")]
     public Button bin;
+    public Button home;
     public Sprite binOpen, binClosed;
 
     public GameObject nodeButtonTemplate;
 
     [Header("Other variables")]
     public GameObject alert;
+    public GameObject score;
+
     public bool isDragging = false;
 
     private GameObject[] nodeButtons;
@@ -74,6 +77,8 @@ public class GameController : MonoBehaviour
             nodeButtons = list.ToArray();
 
             SetupPlayButton();
+            UpdateScoreIndicator();
+            home.onClick.AddListener(() => LevelManager.GoToMainMenu());
             editButton.onClick.AddListener(ToggleMode);
         } catch (System.Exception e) {
             #if UNITY_EDITOR
@@ -85,16 +90,16 @@ public class GameController : MonoBehaviour
 
     public void Update() {
         float lerpTime = Time.deltaTime * 3.0f;
-        Vector3 target = IsInEditor() ? editorCamera : playCamera;
-        Quaternion rotation = IsInEditor() ? editorRotation : playRotation;
+        Vector3 target = IsInEditor ? editorCamera : playCamera;
+        Quaternion rotation = IsInEditor ? editorRotation : playRotation;
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, target, lerpTime);
         Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, rotation, lerpTime);
     }
 
     public void SetRunning(bool value) => state = value ? State.Playing : State.Stopped;
-    public bool IsRunning() => state == State.Playing;
-    public bool IsStopped() => state == State.Stopped;
-    public bool IsInEditor() => state == State.Editor;
+    public bool IsRunning => state == State.Playing;
+    public bool IsStopped => state == State.Stopped;
+    public bool IsInEditor => state == State.Editor;
 
 
     /// <summary>
@@ -107,18 +112,16 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// Iterates through each player and determines whether they have reached an exit. Traditionally called by a Node
-    /// when it has no child.
+    /// Iterates through each "player" and determines whether they have reached an exit.
+    /// Traditionally called by a <c>Node</c> when it has no child node left to determine if the player has 'won'.
     /// </summary>
     public void WinConditionHandling()
     {
-        bool hasWon = true;
-        foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player")) {
-            PlayerController component = player.GetComponent<PlayerController>();
-            if (map.map[component.coordinateX, component.coordinateY] != MapController.END_TILE) hasWon = false;
-        }
+        if (player.GetComponent<PlayerController>().Tile() != MapController.END_TILE) return;
 
-        if (hasWon) LevelManager.GoToMainMenu();
+        LevelManager.SetScore(startNode.child ? startNode.child.Count : 0);
+        UpdateScoreIndicator();
+        StopRun();
     }
 
     /// <summary>
@@ -140,6 +143,20 @@ public class GameController : MonoBehaviour
     {
         Image binImage = bin.GetComponent<Image>();
         binImage.sprite = ValidLocation(position) ? binClosed : binOpen;
+    }
+
+    /// <summary>
+    /// Update's the score display, determining whether it should be shown and what value to show.
+    /// </summary>
+    private void UpdateScoreIndicator()
+    {
+        int value = PlayerPrefs.GetInt(LevelManager.GetName(), 0);
+        if (value > 0) {
+            score.GetComponentInChildren<Text>().text = value.ToString();
+            score.SetActive(true);
+        } else {
+            score.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -207,23 +224,28 @@ public class GameController : MonoBehaviour
         editorBounds = Rect.MinMaxRect(
             editorCamera.x - xOffset, editorCamera.y - yOffset, editorCamera.x + xOffset, editorCamera.y + yOffset
         );
-        xOffset *= 0.9f;
-        yOffset *= 0.9f;
-        startNode.transform.position = new Vector2(editorCamera.x - xOffset * 0.8f, editorCamera.y + yOffset);
+
+        startNode.transform.position = new Vector2 (
+            editorCamera.x - (xOffset * 0.5f), editorCamera.y + (yOffset * 0.9f)
+        );
     }
 
     private void ToggleMode()
     {
-        if (IsStopped()) {
+        if (IsStopped) {
             runButton.gameObject.SetActive(false);
+            score.SetActive(false);
             editButton.GetComponent<Image>().sprite = test;
             foreach (GameObject button in nodeButtons) button.SetActive(true);
             state = State.Editor;
-        } else if (IsInEditor()) {
+            home.gameObject.SetActive(false);
+        } else if (IsInEditor) {
             runButton.gameObject.SetActive(true);
+            UpdateScoreIndicator();
             editButton.GetComponent<Image>().sprite = edit;
             foreach (GameObject button in nodeButtons) button.SetActive(false);
             state = State.Stopped;
+            home.gameObject.SetActive(true);
         }
     }
 
@@ -291,6 +313,7 @@ public class GameController : MonoBehaviour
     {
         runButton.onClick.RemoveAllListeners();
         editButton.gameObject.SetActive(false);
+        home.gameObject.SetActive(false);
 
         SetupStopButton();
 
@@ -311,6 +334,7 @@ public class GameController : MonoBehaviour
         player.Reset();
         map.Reset();
         editButton.gameObject.SetActive(true);
+        home.gameObject.SetActive(true);
     }
 
     private void SetupPlayButton()

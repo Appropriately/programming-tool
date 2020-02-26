@@ -14,7 +14,7 @@ public abstract class Conditional : DraggableNode
     public override bool Snap(Node node)
     {
         #if UNITY_EDITOR
-            Debug.Log($"Trying to connect {node.DisplayName()} to {DisplayName()}");
+            Debug.Log($"Trying to connect {node.DisplayName} to {DisplayName}");
         #endif
 
         Condition condition = GetConditionFromPosition(node);
@@ -88,6 +88,10 @@ public abstract class Conditional : DraggableNode
         if (success && success.parent is null) success = null;
         if (failure && failure.parent is null) failure = null;
     }
+
+    public override int Count => (
+        1 + (child ? child.Count : 0) + (success ? success.Count : 0) + (failure ? failure.Count : 0)
+    );
 
     /// <summary>
     /// Given some node, figure out based on it's position whether it is a success or failure node.

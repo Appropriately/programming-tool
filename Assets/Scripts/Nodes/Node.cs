@@ -18,7 +18,7 @@ public abstract class Node : MonoBehaviour
     public IEnumerator Run()
     {
         #if UNITY_EDITOR
-            Debug.Log($"{DisplayName()}; ID = {gameObject.GetInstanceID()}");
+            Debug.Log($"{DisplayName}; ID = {gameObject.GetInstanceID()}");
         #endif
 
         Node node = NodeFunction();
@@ -27,7 +27,7 @@ public abstract class Node : MonoBehaviour
         if (node is null) {
             node = IsInLoop();
             if (node is null) {
-                HandleEnd();
+                controller.WinConditionHandling();
             } else {
                 yield return StartCoroutine(node.Run());
             }
@@ -54,7 +54,7 @@ public abstract class Node : MonoBehaviour
     /// node.DisplayName(); // "Node"
     /// </code>
     /// </example>
-    public string DisplayName() => Regex.Replace(GetType().Name, "([a-z])([A-Z])", "$1 $2");
+    public string DisplayName => Regex.Replace(GetType().Name, "([a-z])([A-Z])", "$1 $2");
 
     public virtual void Start() {
         if (controller is null) {
@@ -71,7 +71,7 @@ public abstract class Node : MonoBehaviour
     public virtual bool Snap(Node node)
     {
         #if UNITY_EDITOR
-            Debug.Log($"Trying to connect {node.DisplayName()} to {DisplayName()}");
+            Debug.Log($"Trying to connect {node.DisplayName} to {DisplayName}");
         #endif
 
         if (node is null || node.parent || child) return false;
@@ -105,8 +105,12 @@ public abstract class Node : MonoBehaviour
         if (child && child.parent is null) child = null;
     }
 
-    public void HandleEnd() => controller.WinConditionHandling();
-    public bool IsAttached() => child || parent;
+    /// <summary>
+    /// Returns the count, starting from this <c>Node</c>.
+    /// </summary>
+    public virtual int Count => 1 + (child ? child.Count : 0);
+
+    public bool IsAttached => child || parent;
 
     /// <summary>
     /// Determines whether the current node is indented in some form of <c>Loop</c>.
