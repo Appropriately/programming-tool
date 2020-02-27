@@ -125,6 +125,11 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the number of nodes in the current solution, including the <c>startNode</c>.
+    /// </summary>
+    public int NodeCount => nodes.Count;
+
+    /// <summary>
     /// Handles <c>Node</c> deletion and removal from the nodes array.
     /// </summary>
     /// <param name="node">The <c>Node</c> that needs to be removed</param>

@@ -13,7 +13,7 @@ public static class LevelManager
 
     public static string error = null;
 
-    private static int currentScene;
+    private static int currentScene = -1;
     private static Dictionary<int, string> names = new Dictionary<int, string>();
     private static Dictionary<int, string> maps = new Dictionary<int, string>();
     private static Dictionary<int, Block[]> blocks = new Dictionary<int, Block[]>();
@@ -29,24 +29,19 @@ public static class LevelManager
 
         if (names.Count <= 0)
         {
-            AddLevel(1, "basic_movement", "XEX\nXOX\nXSX", new Block[]{Block.Move, Block.Speak});
-            AddLevel(
-                2, "rotate_right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX",
-                new Block[]{Block.Move, Block.RotateRight}
-            );
-            AddLevel(
-                3, "conditional", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+            Add ("basic_movement", "XEX\nXOX\nXSX", new Block[]{Block.Move, Block.Speak});
+            Add ("rotate_right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX", new Block[]{Block.Move, Block.RotateRight});
+            Add (
+                "conditional", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
                 new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit}
             );
-            AddLevel(
-                4, "interact", "1XX\nOAE\nSXX",
-                new Block[] {
+            Add (
+                "interact", "1XX\nOAE\nSXX", new Block[] {
                     Block.Move, Block.RotateRight, Block.Interact, Block.WhileTraversable, Block.WhileNotAtExit
                 }
             );
-            AddLevel(
-                5, "advanced_interact", "OOOOO\nAXXXO\nAXEBO\nO1XX2\nSXXXX",
-                new Block[] {
+            Add (
+                "advanced_interact", "OOOOO\nAXXXO\nAXEBO\nO1XX2\nSXXXX", new Block[] {
                     Block.Move, Block.RotateRight, Block.RotateLeft, Block.Interact, Block.IfSpaceIsActivatable,
                     Block.WhileNotAtExit, Block.WhileTraversable, Block.Speak
                 }
@@ -136,27 +131,40 @@ public static class LevelManager
     }
 
     /// <summary>
+    /// Adds the defined map to the next free space in the level dictionaries.
+    /// </summary>
+    /// <param name="name">A <c>string</c> representation of the level name</param>
+    /// <param name="map">The map as a 'square', <c>"\n"</c> seperated string</param>
+    /// <param name="availableBlocks">An array of <c>Block</c>s that are usable on this level</param>
+    public static int Add(string name, string map, Block[] availableBlocks)
+    {
+        int id = NextValidID();
+        names.Add(id, name);
+        maps.Add(id, map);
+        blocks.Add(id, availableBlocks);
+        return id;
+    }
+
+    /// <summary>
     /// Clears the values in the LevelManager
     /// </summary>
     public static void Clear()
     {
         error = null;
-        names = new Dictionary<int, string>();
+        currentScene = -1;
         maps = new Dictionary<int, string>();
+        names = new Dictionary<int, string>();
         blocks = new Dictionary<int, Block[]>();
     }
 
     /// <summary>
-    /// Convenience function that aids in the adding of levels to the <c>static</c> variables.
+    /// Loops through the <c>names</c>, <c>maps</c> and <c>blocks</c> arrays until a free key is found.
     /// </summary>
-    /// <param name="id">The level's <c>id</c> as an <c>int</c></param>
-    /// <param name="name">A <c>string</c> representation of the level name</param>
-    /// <param name="map">The map as a 'square', <c>"\n"</c> seperated string</param>
-    /// <param name="availableBlocks">An array of <c>Block</c>s that are usable on this level</param>
-    private static void AddLevel(int id, string name, string map, Block[] availableBlocks)
+    /// <returns>An ID value that is not in use</returns>
+    private static int NextValidID()
     {
-        names.Add(id, name);
-        maps.Add(id, map);
-        blocks.Add(id, availableBlocks);
+        int id = names.Keys.Count > 0 ? names.Keys.Last() : 1;
+        while(names.ContainsKey(id) && maps.ContainsKey(id) && blocks.ContainsKey(id)) id++;
+        return id;
     }
 }

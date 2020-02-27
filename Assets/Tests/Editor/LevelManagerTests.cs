@@ -54,10 +54,22 @@ namespace Tests
         }
 
         [Test, Description("Accessing the current map should fail as a map hasn't been loaded through the manager")]
-        public void AccessingCurrentMapWhenMapIsNotLoaded_ThrowsKeyNotFoundException()
+        public void AccessingCurrentMapWhenMapIsNotLoaded_ReturnsNull()
         {
             LevelManager.Seed();
             Assert.Throws<KeyNotFoundException>(() => LevelManager.GetName());
+        }
+
+        // -------------------------------------------------------------------------------------------------------- //
+        // Test adding a level
+        // -------------------------------------------------------------------------------------------------------- //
+
+        [Test, Description("Adding a valid level, the name at the returned ID should be the same as the set one")]
+        public void AddingLevelAndRetrievingDataIsExpectedValue_ReturnsTrue()
+        {
+            string name = "test";
+            int id = LevelManager.Add(name, "XEX\nXOX\nXSX", new Block[]{Block.Move});
+            Assert.IsTrue(name == LevelManager.GetNameForID(id));
         }
     }
 }
