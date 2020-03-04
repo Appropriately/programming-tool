@@ -41,6 +41,9 @@ public class GameController : MonoBehaviour
     private Vector3 playCamera, editorCamera;
     private Quaternion playRotation, editorRotation;
 
+    /// <summary>
+    /// The state of the current game, either in editor or playing/stopped.
+    /// </summary>
     enum State
     {
         Stopped,
@@ -48,9 +51,6 @@ public class GameController : MonoBehaviour
         Playing
     }
 
-    /// <summary>
-    /// The game's current state.
-    /// </summary>
     private State state = State.Stopped;
 
     public void Start() {

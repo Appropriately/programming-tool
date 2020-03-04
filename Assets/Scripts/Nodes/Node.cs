@@ -12,9 +12,16 @@ public abstract class Node : MonoBehaviour
     public Node child, parent;
 
     /// <summary>
-    /// Performs the Node specific functionality, calling upon the NodeFunction function which has specific
-    /// functionality depending on the node.
+    /// Performs <c>Node</c> specific functionality.
+    /// Calls upon the <c>NodeFunction</c> function which has specific functionality depending on the node.
+    /// <seealso cref="Node.NodeFunction()"/>
     /// </summary>
+    /// <example>
+    /// <code>
+    /// Node node;
+    /// yield return StartCoroutine(node.Run());
+    /// </code>
+    /// </example>
     public IEnumerator Run()
     {
         #if UNITY_EDITOR
@@ -37,9 +44,10 @@ public abstract class Node : MonoBehaviour
     }
 
     /// <summary>
-    /// Functionality unique to a particular node, that returns the next node to progress to.
+    /// Functionality unique to a particular <c>Node</c>, that returns the next <c>Node</c> to progress to.
+    /// The default behaviour is to simply return the <c>child</c>.
     /// </summary>
-    /// <returns>The next node that will be run</returns>
+    /// <returns>The next <c>Node that will be run</returns>
     public virtual Node NodeFunction() => child;
 
     /// <summary>

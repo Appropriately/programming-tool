@@ -18,6 +18,7 @@ public class MapController : MonoBehaviour
     private static readonly char[] buttonChars = { '1', '2' };
 
     public char[,] map;
+    public GameObject endObject;
     public List<char> activated = new List<char>();
     public List<GameObject> activatable;
 
@@ -183,31 +184,33 @@ public class MapController : MonoBehaviour
         tile.transform.position = position;
 
         Vector3 scale = tile.transform.localScale;
-        tile.transform.localScale = new Vector3(scale.x * Scale(), scale.y * Scale(), 0.2f);
+        tile.transform.localScale = new Vector3(Scale() * 0.96f, Scale() * 0.96f, 0.2f);
+        tile.GetComponent<Renderer>().material.color = new Color(0.494f, 0.784f, 0.314f);
         switch (character)
         {
             case START_TILE:
                 tile.gameObject.tag = "Respawn";
-                tile.GetComponent<Renderer>().material.color = Color.blue;
                 break;
             case NORMAL_TILE:
-                tile.GetComponent<Renderer>().material.color = Color.yellow;
                 break;
             case END_TILE:
                 tile.gameObject.tag = "Finish";
-                tile.GetComponent<Renderer>().material.color = Color.red;
+
+                if (endObject) {
+                    Vector3 offsetPosition = tile.transform.position + new Vector3(0, 0, -0.5f);
+                    GameObject obj = Instantiate(endObject, offsetPosition, Quaternion.identity);
+                    obj.AddComponent<Spin>();
+                }
                 break;
             default:
                 if (Array.Exists(activatableChars, e => e == character)) {
-                    tile.GetComponent<Renderer>().material.color = Color.yellow;
-
                     Activatable component = tile.AddComponent<Activatable>();
                     component.type = character;
 
                     activatable.Add(tile);
                     tile.SetActive(false);
                 } else if (Array.Exists(buttonChars, e => e == character)) {
-                    tile.GetComponent<Renderer>().material.color = Color.cyan;
+                    tile.GetComponent<Renderer>().material.color = new Color(0.529f, 0.122f, 0.471f);
                 } else {
                     Destroy(tile);
                 }

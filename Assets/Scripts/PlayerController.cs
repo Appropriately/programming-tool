@@ -13,6 +13,7 @@ public enum Direction {
 public class PlayerController : MonoBehaviour
 {
     private const float MOVEMENT_SPEED = 3.0f;
+    private const float ROTATION_SPEED = 3.0f;
 
     public GameController controller;
     public MapController mapController;
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
 
     private GameObject startTile;
     private Vector3 targetPosition;
+    private Quaternion targetRotation;
 
     private Dictionary<char, char> activateChar = new Dictionary<char, char>() { {'1','A'}, {'2','B'} };
 
@@ -38,12 +40,13 @@ public class PlayerController : MonoBehaviour
 
     public void Update() {
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * MOVEMENT_SPEED);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * ROTATION_SPEED);
     }
 
     public void Reset() {
-        targetPosition = startTile.transform.position - (Vector3.forward * 0.2f);
+        targetPosition = startTile.transform.position - (Vector3.forward * 0.25f);
         gameObject.transform.position = targetPosition;
-        direction = StartDirection();
+        SetDirection(StartDirection(), true);
     }
 
     public void MoveForward() {
@@ -63,16 +66,16 @@ public class PlayerController : MonoBehaviour
         switch(direction)
         {
             case Direction.Up:
-                direction = Direction.Right;
+                SetDirection(Direction.Right);
                 break;
             case Direction.Left:
-                direction = Direction.Up;
+                SetDirection(Direction.Up);
                 break;
             case Direction.Down:
-                direction = Direction.Left;
+                SetDirection(Direction.Left);
                 break;
             case Direction.Right:
-                direction = Direction.Down;
+                SetDirection(Direction.Down);
                 break;
         }
     }
@@ -81,16 +84,16 @@ public class PlayerController : MonoBehaviour
         switch(direction)
         {
             case Direction.Up:
-                direction = Direction.Left;
+                SetDirection(Direction.Left);
                 break;
             case Direction.Left:
-                direction = Direction.Down;
+                SetDirection(Direction.Down);
                 break;
             case Direction.Down:
-                direction = Direction.Right;
+                SetDirection(Direction.Right);
                 break;
             case Direction.Right:
-                direction = Direction.Up;
+                SetDirection(Direction.Up);
                 break;
         }
     }
@@ -128,6 +131,32 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <returns>The (x, y) coordinates</returns>
     public (int, int) FrontCoordinates() => CoordinatesAhead(coordinateX, coordinateY);
+
+    /// <summary>
+    /// Sets the direction value for the player, and sets up the rotation of the player model
+    /// </summary>
+    /// <param name="newDirection">The direction the player should face</param>
+    /// <param name="force">Whether the rotation should be forced or naturally turn to the new rotation</param>
+    public void SetDirection(Direction newDirection, bool force = false)
+    {
+        Quaternion rotation = Quaternion.identity;
+        switch (newDirection)
+        {
+            case Direction.Left:
+                rotation.eulerAngles = new Vector3(0, 0, 90);
+                break;
+            case Direction.Down:
+                rotation.eulerAngles = new Vector3(0, 0, 180);
+                break;
+            case Direction.Right:
+                rotation.eulerAngles = new Vector3(0, 0, 270);
+                break;
+        }
+
+        direction = newDirection;
+        targetRotation = rotation;
+        if (force) transform.rotation = rotation;
+    }
 
     private IEnumerator SpeakCoroutine(string text, int duration)
     {
