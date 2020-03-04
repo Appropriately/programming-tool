@@ -8,8 +8,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public static class LevelManager
 {
-    private const string SCENE_NAME = "TestGame";
-    private const string MAIN_MENU_SCENE_NAME = "TestMenu";
+    private const string SCENE_NAME = "Game";
+    private const string MAIN_MENU_SCENE_NAME = "Menu";
 
     public static string error = null;
 

@@ -14,7 +14,7 @@ namespace Tests
         {
             LevelManager.Clear();
             LevelManager.Seed();
-            SceneManager.LoadScene("TestMenu");
+            SceneManager.LoadScene("Menu");
         }
 
         // -------------------------------------------------------------------------------------------------------- //
