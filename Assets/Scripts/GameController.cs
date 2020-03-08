@@ -28,6 +28,15 @@ public class GameController : MonoBehaviour
     public GameObject alert;
     public GameObject score;
 
+    [Header("Icons")]
+    public Sprite cheese;
+    public Sprite forward;
+    public Sprite rotate;
+    public Sprite speak;
+    public Sprite interact;
+
+    [Header("Other")]
+
     public bool isDragging = false;
 
     private GameObject[] nodeButtons;
@@ -68,13 +77,7 @@ public class GameController : MonoBehaviour
             nodes = new List<GameObject>{ startNode.gameObject };
 
             template = GenerateTemplateNode();
-            Vector3 position = nodeButtonTemplate.GetComponent<RectTransform>().position;
-            List<GameObject> list = new List<GameObject>();
-            foreach (Block block in LevelManager.GetBlocks()) {
-                list.Add(CreateNodeButton(block, position));
-                position -= new Vector3(0, nodeButtonTemplate.GetComponent<RectTransform>().sizeDelta.y * 1.2f);
-            }
-            nodeButtons = list.ToArray();
+            SetUpButtons();
 
             SetupPlayButton();
             UpdateScoreIndicator();
@@ -100,7 +103,6 @@ public class GameController : MonoBehaviour
     public bool IsRunning => state == State.Playing;
     public bool IsStopped => state == State.Stopped;
     public bool IsInEditor => state == State.Editor;
-
 
     /// <summary>
     /// Checks whether the given location is within the bounds of the editor.
@@ -165,17 +167,73 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// Iterates over all the available blocks for the level and generates a unique button for each one.
+    /// </summary>
+    private void SetUpButtons()
+    {
+        Vector3 position = nodeButtonTemplate.GetComponent<RectTransform>().position;
+        List<GameObject> list = new List<GameObject>();
+        foreach (Block block in LevelManager.GetBlocks()) {
+            GameObject button;
+
+            switch (block) {
+                case Block.RotateRight:
+                    button = CreateNodeButton(block, position, "rotate", rotate, Color.cyan);
+                    Image image = button.GetComponentsInChildren<Image>()[1];
+                    image.transform.eulerAngles = image.transform.rotation.eulerAngles + 180f * Vector3.up;
+                    break;
+                case Block.RotateLeft:
+                    button = CreateNodeButton(block, position, "rotate", rotate, Color.cyan);
+                    break;
+                case Block.Speak:
+                    button = CreateNodeButton(block, position, "speak", speak, Color.red);
+                    break;
+                case Block.IfSpaceIsTraversable:
+                    button = CreateNodeButton(block, position, "if", forward, Color.cyan);
+                    break;
+                case Block.IfSpaceIsActivatable:
+                    button = CreateNodeButton(block, position, "if", interact, Color.red);
+                    break;
+                case Block.WhileNotAtExit:
+                    button = CreateNodeButton(block, position, "until", cheese, Color.white);
+                    break;
+                case Block.WhileTraversable:
+                    button = CreateNodeButton(block, position, "while", forward, Color.cyan);
+                    break;
+                case Block.Interact:
+                    button = CreateNodeButton(block, position, "interact", interact, Color.red);
+                    break;
+                default:
+                    button = CreateNodeButton(block, position, "move", forward, Color.cyan);
+                    break;
+            }
+
+            list.Add(button);
+            position -= new Vector3(0, nodeButtonTemplate.GetComponent<RectTransform>().sizeDelta.y * 1.05f);
+        }
+        nodeButtons = list.ToArray();
+    }
+
+    /// <summary>
     /// Creates a button responsible for generating new nodes for the given <c>Block</c>.
     /// Sets up the appropriate events that will need to fire.
     /// </summary>
     /// <param name="block">The <c>Block</c> that the button will be expected to create</param>
     /// <param name="position">The <c>Vector3</c> position of the new button</param>
+    /// <param name="text">The content of the button's <c>Text</c> block</param>
+    /// <param name="sprite">The <c>Sprite</c> to display on the button</param>
+    /// <param name="colour">The colour of the <c>Sprite</c></param>
     /// <returns>The button as a <c>GameObject</c></returns>
-    private GameObject CreateNodeButton(Block block, Vector3 position)
+    private GameObject CreateNodeButton(Block block, Vector3 position, string text, Sprite sprite, Color colour)
     {
         GameObject button = Instantiate(nodeButtonTemplate, position, Quaternion.identity);
         button.name = block.ToString();
-        button.GetComponentInChildren<Text>().text = block.ToString();
+        button.GetComponentInChildren<Text>().text = text;
+
+        // TODO: Make getting this more elegant. This solution works but can lead to a null pointer exception
+        Image image = button.GetComponentsInChildren<Image>()[1];
+        image.sprite = sprite;
+        image.color = colour;
 
         EventTrigger trigger = button.GetComponent<EventTrigger>();
         EventTrigger.Entry drag = new EventTrigger.Entry();
@@ -257,43 +315,70 @@ public class GameController : MonoBehaviour
     private GameObject CreateCodeBlock(Block block)
     {
         GameObject node = Instantiate(template);
-        node.name = block.ToString();
-        node.GetComponentInChildren<TextMesh>().text = block.ToString().ToLower();
-
+        float xScale = node.transform.localScale.x;
         switch (block)
         {
             case Block.Move:
-                node.AddComponent<Move>();
+                SetupNode(node, typeof(Move), 1.0f, "move", Color.cyan, forward);
                 break;
             case Block.RotateRight:
-                node.AddComponent<RotateRight>();
+                SetupNode(node, typeof(RotateRight), 1.0f, "rotate", Color.cyan, rotate);
+                node.GetComponentInChildren<SpriteRenderer>().flipX = true;
                 break;
             case Block.RotateLeft:
-                node.AddComponent<RotateLeft>();
+                SetupNode(node, typeof(RotateLeft), 1.0f, "rotate", Color.cyan, rotate);
                 break;
             case Block.Speak:
-                node.AddComponent<Speak>();
+                SetupNode(node, typeof(Speak), 1.0f, "speak", Color.red, speak);
                 break;
             case Block.IfSpaceIsTraversable:
-                node.AddComponent<IfSpaceIsTraversable>();
-                node.transform.localScale += new Vector3(node.transform.localScale.x, 0);
+                SetupNode(node, typeof(IfSpaceIsTraversable), 2.0f, "if", Color.cyan, forward);
                 break;
             case Block.IfSpaceIsActivatable:
-                node.AddComponent<IfSpaceIsActivatable>();
-                node.transform.localScale += new Vector3(node.transform.localScale.x, 0);
+                SetupNode(node, typeof(IfSpaceIsActivatable), 2.0f, "if", Color.red, interact);
                 break;
             case Block.WhileNotAtExit:
-                node.AddComponent<WhileNotAtExit>();
+                SetupNode(node, typeof(WhileNotAtExit), 1.0f, "until", Color.white, cheese);
                 break;
             case Block.WhileTraversable:
-                node.AddComponent<WhileTraversable>();
+                SetupNode(node, typeof(WhileTraversable), 1.0f, "while", Color.cyan, forward);
                 break;
             case Block.Interact:
-                node.AddComponent<Interact>();
+                SetupNode(node, typeof(Interact), 1.0f, "interact", Color.red, interact);
                 break;
         }
 
         return node;
+    }
+
+    /// <summary>
+    /// Utility function for adjusting the <c>Node</c>'s appearance
+    /// Adjusts the look of the <c>SpriteRenderer</c> as well as the included <c>TextMesh</c>
+    /// </summary>
+    /// <param name="node">The <c>Node</c> that needs adjusting</param>
+    /// <param name="type">The particular <c>Node</c> implementation</param>
+    /// <param name="scale">The scale of the particular node, along the x-axis</param>
+    /// <param name="text">The text to display</param>
+    /// <param name="colour">The colour of the <c>Sprite</c></param>
+    /// <param name="sprite">The actual image to display for the <c>SpriteRenderer</c></param>
+    private void SetupNode(GameObject node, System.Type type, float scale, string text, Color colour, Sprite sprite)
+    {
+        SpriteRenderer image = node.GetComponentInChildren<SpriteRenderer>();
+        TextMesh textMesh = node.GetComponentInChildren<TextMesh>();
+
+        node.AddComponent(type);
+        textMesh.text = text;
+        image.color = colour;
+        image.sprite = sprite;
+
+        if (scale > 1.0f) {
+            Vector3 vectorScale = node.transform.localScale;
+            node.transform.localScale = new Vector3(vectorScale.x * scale, vectorScale.y, vectorScale.z);
+            vectorScale = image.transform.localScale;
+            image.transform.localScale = new Vector3(vectorScale.x / scale, vectorScale.y, vectorScale.z);
+            vectorScale = textMesh.transform.localScale;
+            textMesh.transform.localScale = new Vector3(vectorScale.x / scale, vectorScale.y, vectorScale.z);
+        }
     }
 
     private void AddNode(Block block, bool draggable)
