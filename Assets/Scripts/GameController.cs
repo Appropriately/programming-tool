@@ -74,6 +74,7 @@ public class GameController : MonoBehaviour
             player.Setup();
             map.Reset();
 
+            startNode.GetComponentInChildren<TextMesh>().text = Localisation.Translate("on");
             nodes = new List<GameObject>{ startNode.gameObject };
 
             template = GenerateTemplateNode();
@@ -178,33 +179,33 @@ public class GameController : MonoBehaviour
 
             switch (block) {
                 case Block.RotateRight:
-                    button = CreateNodeButton(block, position, "rotate", rotate, Color.cyan);
+                    button = CreateNodeButton(block, position, Localisation.Translate("rotate"), rotate, Color.cyan);
                     Image image = button.GetComponentsInChildren<Image>()[1];
                     image.transform.eulerAngles = image.transform.rotation.eulerAngles + 180f * Vector3.up;
                     break;
                 case Block.RotateLeft:
-                    button = CreateNodeButton(block, position, "rotate", rotate, Color.cyan);
+                    button = CreateNodeButton(block, position, Localisation.Translate("rotate"), rotate, Color.cyan);
                     break;
                 case Block.Speak:
-                    button = CreateNodeButton(block, position, "speak", speak, Color.red);
+                    button = CreateNodeButton(block, position, Localisation.Translate("speak"), speak, Color.red);
                     break;
                 case Block.IfSpaceIsTraversable:
-                    button = CreateNodeButton(block, position, "if", forward, Color.cyan);
+                    button = CreateNodeButton(block, position, Localisation.Translate("if"), forward, Color.cyan);
                     break;
                 case Block.IfSpaceIsActivatable:
-                    button = CreateNodeButton(block, position, "if", interact, Color.red);
+                    button = CreateNodeButton(block, position, Localisation.Translate("if"), interact, Color.red);
                     break;
                 case Block.WhileNotAtExit:
-                    button = CreateNodeButton(block, position, "until", cheese, Color.white);
+                    button = CreateNodeButton(block, position, Localisation.Translate("until"), cheese, Color.white);
                     break;
                 case Block.WhileTraversable:
-                    button = CreateNodeButton(block, position, "while", forward, Color.cyan);
+                    button = CreateNodeButton(block, position, Localisation.Translate("while"), forward, Color.cyan);
                     break;
                 case Block.Interact:
-                    button = CreateNodeButton(block, position, "interact", interact, Color.red);
+                    button = CreateNodeButton(block, position, Localisation.Translate("interact"), interact, Color.red);
                     break;
                 default:
-                    button = CreateNodeButton(block, position, "move", forward, Color.cyan);
+                    button = CreateNodeButton(block, position, Localisation.Translate("move"), forward, Color.cyan);
                     break;
             }
 
@@ -230,7 +231,6 @@ public class GameController : MonoBehaviour
         button.name = block.ToString();
         button.GetComponentInChildren<Text>().text = text;
 
-        // TODO: Make getting this more elegant. This solution works but can lead to a null pointer exception
         Image image = button.GetComponentsInChildren<Image>()[1];
         image.sprite = sprite;
         image.color = colour;
@@ -319,32 +319,32 @@ public class GameController : MonoBehaviour
         switch (block)
         {
             case Block.Move:
-                SetupNode(node, typeof(Move), 1.0f, "move", Color.cyan, forward);
+                SetupNode(node, typeof(Move), 1.0f, Localisation.Translate("move"), Color.cyan, forward);
                 break;
             case Block.RotateRight:
-                SetupNode(node, typeof(RotateRight), 1.0f, "rotate", Color.cyan, rotate);
+                SetupNode(node, typeof(RotateRight), 1.0f, Localisation.Translate("rotate"), Color.cyan, rotate);
                 node.GetComponentInChildren<SpriteRenderer>().flipX = true;
                 break;
             case Block.RotateLeft:
-                SetupNode(node, typeof(RotateLeft), 1.0f, "rotate", Color.cyan, rotate);
+                SetupNode(node, typeof(RotateLeft), 1.0f, Localisation.Translate("rotate"), Color.cyan, rotate);
                 break;
             case Block.Speak:
-                SetupNode(node, typeof(Speak), 1.0f, "speak", Color.red, speak);
+                SetupNode(node, typeof(Speak), 1.0f, Localisation.Translate("speak"), Color.red, speak);
                 break;
             case Block.IfSpaceIsTraversable:
-                SetupNode(node, typeof(IfSpaceIsTraversable), 2.0f, "if", Color.cyan, forward);
+                SetupNode(node, typeof(IfSpaceIsTraversable), 2.0f, Localisation.Translate("if"), Color.cyan, forward);
                 break;
             case Block.IfSpaceIsActivatable:
-                SetupNode(node, typeof(IfSpaceIsActivatable), 2.0f, "if", Color.red, interact);
+                SetupNode(node, typeof(IfSpaceIsActivatable), 2.0f, Localisation.Translate("if"), Color.red, interact);
                 break;
             case Block.WhileNotAtExit:
-                SetupNode(node, typeof(WhileNotAtExit), 1.0f, "until", Color.white, cheese);
+                SetupNode(node, typeof(WhileNotAtExit), 1.0f, Localisation.Translate("until"), Color.white, cheese);
                 break;
             case Block.WhileTraversable:
-                SetupNode(node, typeof(WhileTraversable), 1.0f, "while", Color.cyan, forward);
+                SetupNode(node, typeof(WhileTraversable), 1.0f, Localisation.Translate("while"), Color.cyan, forward);
                 break;
             case Block.Interact:
-                SetupNode(node, typeof(Interact), 1.0f, "interact", Color.red, interact);
+                SetupNode(node, typeof(Interact), 1.0f, Localisation.Translate("interact"), Color.red, interact);
                 break;
         }
 

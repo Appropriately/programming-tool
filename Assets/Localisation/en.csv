@@ -1,0 +1,19 @@
+on;On
+
+rotate;Rotate
+if;If
+speak;Speak
+until;Until
+while;While
+interact;Interact
+move;Move
+
+easy;Easy
+intermediate;Intermediate
+hard;Hard
+
+language;English
+
+hint_1;You can connect two nodes together!
+hint_2;You can drag nodes from the buttons on the right.
+comment_1;Help the mouse can get the cheese!

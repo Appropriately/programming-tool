@@ -8,7 +8,7 @@
     {
         System.Random rand = new System.Random();
         string comment = comments[rand.Next(comments.Length)];
-        controller.player.Speak(comment);
+        controller.player.Speak(Localisation.Translate(comment, true));
         return child;
     }
 }

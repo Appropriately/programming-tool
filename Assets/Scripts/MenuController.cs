@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +9,14 @@ public class MenuController : MonoBehaviour
     public void Start()
     {
         LevelManager.Seed();
+        if (Localisation.IsInitialized is false)
+        {
+            #if UNITY_EDITOR
+                Localisation.Initialize(SystemLanguage.Japanese);
+            #else
+                Localisation.Initialize(Application.systemLanguage);
+            #endif
+        }
 
         Vector3 position = button.GetComponent<RectTransform>().position;
         float height = button.GetComponent<RectTransform>().sizeDelta.y;
@@ -27,7 +33,8 @@ public class MenuController : MonoBehaviour
         newButton.name = name;
 
         float complexity = LevelManager.GetComplexityForID(id);
-        newButton.GetComponentInChildren<Text>().text = $"{name} - {ComplexityAsString(complexity)}";
+        string text = $"{Localisation.Translate(name, true)} - {ComplexityAsString(complexity)}";
+        newButton.GetComponentInChildren<Text>().text = text;
 
         newButton.GetComponent<Button>().onClick.AddListener(delegate { LevelManager.Load(id); });
 
@@ -40,11 +47,11 @@ public class MenuController : MonoBehaviour
     private string ComplexityAsString(float complexity)
     {
         if (complexity < 0.3f) {
-            return "Easy";
+            return Localisation.Translate("easy");
         } else if (complexity > 0.7f) {
-            return "Hard";
+            return Localisation.Translate("hard");
         } else {
-            return "Intermediate";
+            return Localisation.Translate("intermediate");
         }
     }
 }
