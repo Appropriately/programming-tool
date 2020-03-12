@@ -17,7 +17,7 @@ public static class Localisation
     /// <summary>
     /// The location of the localisation <c>CSV</c> files
     /// </summary>
-    private const string LOCALISATION_FOLDER = "Assets/Localisation";
+    private const string LOCALISATION_FOLDER = "/Localisation";
 
     private static Dictionary<string, string> english = new Dictionary<string, string>();
     private static Dictionary<string, string> userLanguage = new Dictionary<string, string>();
@@ -93,7 +93,7 @@ public static class Localisation
     /// <param name="language">The <c>SystemLanguage</c> to be used for translation</param>
     private static void Parse(Dictionary<string, string> dictionary, SystemLanguage language)
     {
-        string fullPath = $"{LOCALISATION_FOLDER}/{SystemLanguageToIso(language)}.csv";
+        string fullPath = $"{Application.dataPath}{LOCALISATION_FOLDER}/{SystemLanguageToIso(language)}.csv";
         if (File.Exists(fullPath) is false)
             return;
 

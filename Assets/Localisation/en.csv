@@ -12,6 +12,8 @@ easy;Easy
 intermediate;Intermediate
 hard;Hard
 
+which_exit;So... which exit?
+
 language;English
 
 hint_1;You can connect two nodes together!

@@ -42,7 +42,7 @@ public class MenuController : MonoBehaviour
         if (Localisation.IsInitialized is false)
         {
             #if UNITY_EDITOR
-                Localisation.Initialize(SystemLanguage.Japanese);
+                Localisation.Initialize(SystemLanguage.English);
             #else
                 Localisation.Initialize(Application.systemLanguage);
             #endif
@@ -52,9 +52,14 @@ public class MenuController : MonoBehaviour
         aboutButton.GetComponent<Button>().onClick.AddListener(() => ChangeState(State.About));
         aboutMenu.GetComponentInChildren<Text>().text = Localisation.Translate("about_game");
 
+        #if UNITY_WEBGL
+            aboutMenu.SetActive(false);
+            aboutButton.SetActive(false);
+        #endif
+
         Vector3 position = template.GetComponent<RectTransform>().position;
         float height = template.GetComponent<RectTransform>().sizeDelta.y;
-        UpdateScrollViewSize(height);
+        Invoke("UpdateScrollViewSize", 0.02f);
 
         foreach (KeyValuePair<int, string> level in LevelManager.GetLevels())
         {
@@ -115,11 +120,14 @@ public class MenuController : MonoBehaviour
     /// <summary>
     /// Utility function for adjusting the size of the scrollview for handling overflow.
     /// </summary>
-    /// <param name="buttonHeight">The height of a button element</param>
-    private void UpdateScrollViewSize(float buttonHeight)
+    private void UpdateScrollViewSize()
     {
         RectTransform rectTransform = scrollViewContent.GetComponent<RectTransform>();
-        float size = 540.0f - (LevelManager.GetLevels().Count * buttonHeight * HEIGHT_MULTIPLIER);
+
+        int levelCount = LevelManager.GetLevels().Count;
+        float height = template.GetComponent<RectTransform>().sizeDelta.y;
+        float size = rectTransform.rect.height - (height * 0.5f) - (levelCount * height * HEIGHT_MULTIPLIER);
+
         if (size < 0)
             rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, size);
     }
