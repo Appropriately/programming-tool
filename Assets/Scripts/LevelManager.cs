@@ -23,29 +23,26 @@ public static class LevelManager
     /// </summary>
     public static void Seed()
     {
-        #if UNITY_EDITOR
-            PlayerPrefs.DeleteAll();
-        #endif
-
         if (names.Count <= 0)
         {
-            Add ("basic_movement", "XEX\nXOX\nXSX", new Block[]{Block.Move, Block.Speak});
-            Add ("rotate_right", "XXXXX\nXXOEX\nXXOXX\nXXSXX\nXXXXX", new Block[]{Block.Move, Block.RotateRight});
+            Add ("move", "EX\nSX", new Block[]{ Block.Move, Block.Speak });
+            Add ("move_twice", "XXX\nSOE\nXXX", new Block[]{ Block.Move, Block.Speak });
             Add (
-                "conditional", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
+                "loop_move", "XXXEXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXSXXX",
+                new Block[]{ Block.Move, Block.WhileNotAtExit }
+            );
+            Add ("rotate", "OE\nSX", new Block[]{ Block.Move, Block.RotateRight });
+            Add (
+                "which_exit", "XXEXXX\nXXSXXX\nXXOXXX\nXXOXXX\nXXOXXX\nXXEXXX",
+                new Block[]{ Block.Move, Block.RotateRight }
+            );
+            Add ("left_and_right", "XEX\nXOO\nXXS", new Block[]{ Block.Move, Block.RotateRight, Block.RotateLeft });
+            Add (
+                "rotates_with_conditional", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
                 new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit}
             );
-            Add (
-                "interact", "1XX\nOAE\nSXX", new Block[] {
-                    Block.Move, Block.RotateRight, Block.Interact, Block.WhileTraversable, Block.WhileNotAtExit
-                }
-            );
-            Add (
-                "advanced_interact", "OOOOO\nAXXXO\nAXEBO\nO1XX2\nSXXXX", new Block[] {
-                    Block.Move, Block.RotateRight, Block.RotateLeft, Block.Interact, Block.IfSpaceIsActivatable,
-                    Block.WhileNotAtExit, Block.WhileTraversable, Block.Speak
-                }
-            );
+            Add ("interact", "1XX\nOAE\nSXX", new Block[] { Block.Move, Block.RotateRight, Block.Interact });
+            Add ("long_route", "OOOO\nS1XO\nAXXO\nEOOO", new Block[]{ Block.Move, Block.RotateRight, Block.Interact });
         }
     }
 
@@ -116,7 +113,7 @@ public static class LevelManager
     /// Given the <c>score</c> as an integer, determine if it is higher and store it.
     /// </summary>
     /// <param name="score">The score that should be checked and store</param>
-    public static void SetScore(int score) => SetScoreForLevel(currentScene, score);
+    public static void SetScore(int score) => SetScoreForID(currentScene, score);
 
     /// <summary>
     /// Given the <c>score</c> as an integer, determine if it is higher and store it.
@@ -124,11 +121,24 @@ public static class LevelManager
     /// </summary>
     /// <param name="id">The level's <c>id</c></param>
     /// <param name="score">The score that should be checked and store</param>
-    public static void SetScoreForLevel(int id, int score)
+    public static void SetScoreForID(int id, int score)
     {
-        int existingScore = PlayerPrefs.GetInt(names[id], 0);
-        if (existingScore is 0 || score < existingScore) PlayerPrefs.SetInt(names[id], score);
+        int existingScore = PlayerPrefs.GetInt(LevelHash(id), 0);
+        if (existingScore is 0 || score < existingScore) PlayerPrefs.SetInt(LevelHash(id), score);
     }
+
+    /// <summary>
+    /// Gets the score for the current level set by the <c>LevelManager</c>.
+    /// </summary>
+    /// <returns>The score as an <c>int</c></returns>
+    public static int GetScore() => GetScoreForID(currentScene);
+
+    /// <summary>
+    /// Given an <c>id</c> for a level, get the score as an <c>int</c>.
+    /// </summary>
+    /// <param name="id">The level's <c>id</c></param>
+    /// <returns>The score as an <c>int</c></returns>
+    public static int GetScoreForID(int id) => PlayerPrefs.GetInt(LevelHash(id), 0);
 
     /// <summary>
     /// Adds the defined map to the next free space in the level dictionaries.
@@ -146,7 +156,7 @@ public static class LevelManager
     }
 
     /// <summary>
-    /// Clears the values in the LevelManager
+    /// Clears the values in the <c>LevelManager</c>.
     /// </summary>
     public static void Clear()
     {
@@ -166,5 +176,15 @@ public static class LevelManager
         int id = names.Keys.Count > 0 ? names.Keys.Last() : 1;
         while(names.ContainsKey(id) && maps.ContainsKey(id) && blocks.ContainsKey(id)) id++;
         return id;
+    }
+
+    /// <summary>
+    /// Convert a level into a format for storing/retrieving level data.
+    /// Used in conjunction with <c>PlayerPref</c> to save/load score.
+    /// </summary>
+    /// <param name="id">The level's <c>id</c></param>
+    /// <returns>A unique <c>string</c> for identifying levels</returns>
+    private static string LevelHash(int id) {
+        return $"{GetMapForID(id)};{string.Join(";", GetBlocksForID(id).Cast<int>())}".GetHashCode().ToString();
     }
 }

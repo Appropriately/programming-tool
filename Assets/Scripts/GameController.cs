@@ -158,7 +158,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void UpdateScoreIndicator()
     {
-        int value = PlayerPrefs.GetInt(LevelManager.GetName(), 0);
+        int value = LevelManager.GetScore();
         if (value > 0) {
             score.GetComponentInChildren<Text>().text = value.ToString();
             score.SetActive(true);
@@ -421,8 +421,8 @@ public class GameController : MonoBehaviour
         SetupPlayButton();
 
         SetRunning(false);
-        player.Reset();
         map.Reset();
+        player.Reset();
         editButton.gameObject.SetActive(true);
         home.gameObject.SetActive(true);
     }

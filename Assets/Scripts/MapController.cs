@@ -23,6 +23,7 @@ public class MapController : MonoBehaviour
     public List<GameObject> activatable;
 
     private int startCoordinateX, startCoordinateY;
+    private GameObject parent;
 
     /// <summary>
     /// Given a <c>string</c> representation of a map, validate the structure and generate the appropriate map array.
@@ -43,14 +44,15 @@ public class MapController : MonoBehaviour
         int length = map.GetLength(0);
         float offset = (length * Scale() * 0.5f) + (Scale() * 0.5f);
 
-        position -= new Vector3(offset, offset);
-
+        parent = new GameObject("Map");
+        Vector3 basePosition = Vector3.zero - new Vector3(offset, offset);
         for (int x = 0; x < length; x++) {
             for (int y = 0; y < length; y++) {
-                Vector3 newPosition = position + new Vector3((x + 1) * Scale(), (y + 1) * Scale(), 0);
+                Vector3 newPosition = basePosition + new Vector3((x + 1) * Scale(), (y + 1) * Scale(), 0);
                 CharacterToRenderedTile(map[x,y], newPosition);
             }
         }
+        parent.transform.position = position;
     }
 
     /// <summary>
@@ -115,6 +117,11 @@ public class MapController : MonoBehaviour
                 return activated.Contains(map[x,y]);
         }
     }
+
+    /// <summary>
+    /// Returns the <c>GameObject</c> that holds all of the map information.
+    /// </summary>
+    public GameObject GetMapObject => parent;
 
     /// <summary>
     /// Returns whether the given coordinates are out of bounds.
@@ -182,6 +189,7 @@ public class MapController : MonoBehaviour
         GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Cube);
         tile.name = $"Tile '{character.ToString()}'";
         tile.transform.position = position;
+        tile.transform.SetParent(parent.transform);
 
         Vector3 scale = tile.transform.localScale;
         tile.transform.localScale = new Vector3(Scale() * 0.96f, Scale() * 0.96f, 0.2f);
@@ -200,6 +208,7 @@ public class MapController : MonoBehaviour
                     Vector3 offsetPosition = tile.transform.position + new Vector3(0, 0, -0.5f);
                     GameObject obj = Instantiate(endObject, offsetPosition, Quaternion.identity);
                     obj.AddComponent<Spin>();
+                    obj.transform.SetParent(parent.transform);
                 }
                 break;
             default:

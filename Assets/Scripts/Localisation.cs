@@ -106,11 +106,18 @@ public static class Localisation
                 if (line.Trim().Length > 0)
                 {
                     string[] values = line.Split(';');
-                    if (values.Length == 2) dictionary.Add(values[0], values[1]);
+                    if (values.Length == 2) dictionary.Add(values[0], CleanText(values[1]));
                 }
             }
         }
     }
+
+    /// <summary>
+    /// Utility function for handline the text coming from the <c>CSV</c> read.
+    /// </summary>
+    /// <param name="text">The <c>string</c> that needs to be 'tidied'</param>
+    /// <returns>A <c>string</c> ready to be inserted into the <c>Dictionary</c></returns>
+    private static string CleanText(string text) => text.Replace("\\n","\n");
 
     /// <summary>
     /// Handles a "default" value for a given translation token.
