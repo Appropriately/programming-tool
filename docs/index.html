@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>puzzleCode</title>
+
+    <link rel="stylesheet" href="./stylesheets/style.css">
+    <link rel="stylesheet" href="./stylesheets/webgl.css">
+    <link rel="stylesheet" href="./stylesheets/modal.css">
+</head>
+<body>
+    <main>
+        <section class="inverted" style="background-image: url(../images/complex_level.png);">
+            <h1>puzzleCode.</h1>
+            <h2>What is it?</h2>
+            <ul>
+                <li><i>"Game based teaching tool for youngsters to learn how to code."</i></li>
+                <li>Designed to be accessible in both design and hardware</li>
+                <li>Built in Unity for mobile, desktop & web</li>
+            </ul>
+            <button class="game-button">Play now</button>
+        </section>
+        <section>
+            <h2>How did I do it?</h2>
+            <section class="cards">
+                <article>
+                    <div class="image" style="background-image: url(./images/nodes.png);"></div>
+                    <div class="content">
+                        <h3>Node system</h3>
+                        <p>Designed to show meaning with <strong>minimum use of text</strong>. Scripts are built to be extensible and easily testable.</p>
+                    </div>
+                </article>
+                <article>
+                    <div class="image" style="background-image: url(./images/grammar_levels.png);"></div>
+                    <div class="content">
+                        <h3>Grammar based mapping</h3>
+                        <p><strong>Maps generated on the fly</strong>, using a <code>char</code>-based grammar. Levels can be quickly added and level changes are as simple as changing a <code>string</code>.</p>
+                    </div>
+                </article>
+                <article>
+                    <div class="image" style="background-image: url(./images/complex_level.png);"></div>
+                    <div class="content">
+                        <h3>Progressive disclosure</h3>
+                        <p>As the levels progress, new concepts and nodes are slowly added.</p>
+                    </div>
+                </article>
+                <article>
+                    <div class="image" style="background-image: url(./images/localisation.png);"></div>
+                    <div class="content">
+                        <h3>Custom localization</h3>
+                        <p>Unity doesn't have built-in Localisation support. A custom system was added alongside an extensive <strong>NUnit</strong> test suite.</p>
+                    </div>
+                </article>
+            </section>
+        </section>
+        <section class="inverted">
+            <h2>How does it work?</h2>
+            <section class="topic">
+                <article>
+                    <video controls autoplay>
+                        <source src="footage.webm" type="video/webm">
+                        Your browser does not support the video tag.
+                      </video>
+                </article>
+                <article>
+                    <div class="content">
+                        <h3>Gameplay</h3>
+                        <ol>
+                            <li>Your goal is to navigate the mouse to the block of cheese</li>
+                            <li>The mouse follows commands given by "nodes"</li>
+                            <li>The user can "snap" together these nodes in some order</li>
+                            <li>The number of nodes required to get the mouse to the cheese is the user's score</li>
+                            <li>The less nodes used, the "better" the solution</li>
+                        </ol>
+
+                        <h3>Levels</h3>
+                        <ul>
+                            <li>New node types are introduced as the levels progress</li>
+                            <li>Additional ways of solving levels show up as the levels get more complex</li>
+                        </ul>
+                    </div>
+                </article>
+            </section>
+        </section>
+    </main>
+
+    <div class="buttons">
+        <a class="btn" id="github" target="_blank" href="https://github.com/Appropriately/programming-tool/">
+            <svg viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+        </a>
+        <button class="btn game-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div id="game" class="modal webgl-content">
+        <div id="unityContainer" class="modal-content"></div>
+        <div class="controls">
+            <div class="close-button" style="background-color: red;">X</div>
+            <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+        </div>
+    </div>
+
+    <script src="./javascript/modal.js"></script>
+    <script src="./javascript/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+</body>
+</html>
