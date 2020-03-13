@@ -31,7 +31,7 @@ public static class LevelManager
                 "loop_move", "XXXEXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXSXXX",
                 new Block[]{ Block.Move, Block.WhileNotAtExit }
             );
-            Add ("rotate", "OE\nSX", new Block[]{ Block.Move, Block.RotateRight });
+            Add ("level_rotate", "OE\nSX", new Block[]{ Block.Move, Block.RotateRight });
             Add (
                 "which_exit", "XXEXXX\nXXSXXX\nXXOXXX\nXXOXXX\nXXOXXX\nXXEXXX",
                 new Block[]{ Block.Move, Block.RotateRight }

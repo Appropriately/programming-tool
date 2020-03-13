@@ -17,7 +17,7 @@ public static class Localisation
     /// <summary>
     /// The location of the localisation <c>CSV</c> files
     /// </summary>
-    private const string LOCALISATION_FOLDER = "/Localisation";
+    private const string LOCALISATION_FOLDER = "Localisation/";
 
     private static Dictionary<string, string> english = new Dictionary<string, string>();
     private static Dictionary<string, string> userLanguage = new Dictionary<string, string>();
@@ -93,22 +93,20 @@ public static class Localisation
     /// <param name="language">The <c>SystemLanguage</c> to be used for translation</param>
     private static void Parse(Dictionary<string, string> dictionary, SystemLanguage language)
     {
-        string fullPath = $"{Application.dataPath}{LOCALISATION_FOLDER}/{SystemLanguageToIso(language)}.csv";
-        if (File.Exists(fullPath) is false)
+        TextAsset textFile = Resources.Load<TextAsset>($"{LOCALISATION_FOLDER}{SystemLanguageToIso(language)}");
+        if (textFile.text == null)
             return;
 
-        using(StreamReader reader = new StreamReader(fullPath))
+        List<string> lines = new List<string>(textFile.text.Split(
+            System.Environment.NewLine.ToCharArray(),
+            System.StringSplitOptions.RemoveEmptyEntries)
+        );
+
+        foreach (string line in lines)
         {
-            string line;
-            while (reader.EndOfStream is false)
-            {
-                line = reader.ReadLine();
-                if (line.Trim().Length > 0)
-                {
-                    string[] values = line.Split(';');
-                    if (values.Length == 2) dictionary.Add(values[0], CleanText(values[1]));
-                }
-            }
+            string[] values = line.Split(';');
+            if (values.Length == 2 && dictionary.ContainsKey(values[0]) is false)
+                dictionary.Add(values[0], CleanText(values[1]));
         }
     }
 

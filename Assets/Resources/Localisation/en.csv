@@ -12,7 +12,20 @@ easy;Easy
 intermediate;Intermediate
 hard;Hard
 
-which_exit;So... which exit?
+learn_to_move;Learn to move
+move_twice;Now move twice
+loop_move;Move looping
+level_rotate;Pivot!
+which_exit;Which exit?
+left_and_right;Left /and/ right
+big_space;Big space
+rotates_with_conditional;Conditional rotating
+spiral_path;Spiral path
+interact;Learn to interact
+long_route;The /long route/
+delayed_interaction;Delayed interact-ion
+two_options;Two options
+a_three_step_process;A THREE step process
 
 language;English
 

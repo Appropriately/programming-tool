@@ -52,11 +52,6 @@ public class MenuController : MonoBehaviour
         aboutButton.GetComponent<Button>().onClick.AddListener(() => ChangeState(State.About));
         aboutMenu.GetComponentInChildren<Text>().text = Localisation.Translate("about_game");
 
-        #if UNITY_WEBGL
-            aboutMenu.SetActive(false);
-            aboutButton.SetActive(false);
-        #endif
-
         Vector3 position = template.GetComponent<RectTransform>().position;
         float height = template.GetComponent<RectTransform>().sizeDelta.y;
         Invoke("UpdateScrollViewSize", 0.02f);
