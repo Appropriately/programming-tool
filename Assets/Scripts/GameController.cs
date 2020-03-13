@@ -98,12 +98,15 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void Update() {
+    private void Update() {
         float lerpTime = Time.deltaTime * 3.0f;
         Vector3 target = IsInEditor ? editorCamera : playCamera;
         Quaternion rotation = IsInEditor ? editorRotation : playRotation;
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, target, lerpTime);
         Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, rotation, lerpTime);
+
+        if(Input.GetKeyDown("escape"))
+            LevelManager.GoToMainMenu();
     }
 
     public void SetRunning(bool value) => state = value ? State.Playing : State.Stopped;
