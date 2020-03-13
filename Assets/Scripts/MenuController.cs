@@ -65,11 +65,13 @@ public class MenuController : MonoBehaviour
         if (Screen.width > 720) HandleDesktopView();
     }
 
-    private void Update()
-    {
-        if(Input.GetKeyDown("escape"))
-            Application.Quit();
-    }
+    #if !UNITY_WEBGL
+        private void Update()
+        {
+            if(Input.GetKeyDown("escape"))
+                Application.Quit();
+        }
+    #endif
 
     /// <summary>
     /// Helper function for setting up a menu button.

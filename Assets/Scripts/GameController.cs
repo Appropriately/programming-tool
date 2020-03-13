@@ -105,8 +105,10 @@ public class GameController : MonoBehaviour
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, target, lerpTime);
         Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, rotation, lerpTime);
 
-        if(Input.GetKeyDown("escape"))
-            LevelManager.GoToMainMenu();
+        #if !UNITY_WEBGL
+            if(Input.GetKeyDown("escape"))
+                LevelManager.GoToMainMenu();
+        #endif
     }
 
     public void SetRunning(bool value) => state = value ? State.Playing : State.Stopped;
