@@ -80,6 +80,7 @@ public class GameController : MonoBehaviour
             startNode.GetComponentInChildren<TextMesh>().text = Localisation.Translate("on", true);
             nodes = new List<GameObject>{ startNode.gameObject };
 
+            SetupNodeButtonTemplate();
             template = GenerateTemplateNode();
             SetUpButtons();
 
@@ -284,6 +285,20 @@ public class GameController : MonoBehaviour
         button.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
         button.GetComponent<RectTransform>().position = position;
         return button;
+    }
+
+    /// <summary>
+    /// Scales the node buttons based on the <c>MapController.Scale</c> factor.
+    /// </summary>
+    private void SetupNodeButtonTemplate()
+    {
+        float scale = MapController.Scale;
+        float height = 30.0f * scale;
+        float width = 100.0f * scale;
+
+        RectTransform rectTransform = nodeButtonTemplate.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(width, height);
+        rectTransform.anchoredPosition  = new Vector3(-0.5f * width, -100.0f - (width * 0.5f));
     }
 
     private GameObject GenerateTemplateNode()

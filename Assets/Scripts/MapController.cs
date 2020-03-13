@@ -42,13 +42,13 @@ public class MapController : MonoBehaviour
     /// <param name="position">A <c>Vector3</c> representing the position at which the map will be centred on</param>
     public void Render(Vector3 position) {
         int length = map.GetLength(0);
-        float offset = (length * Scale() * 0.5f) + (Scale() * 0.5f);
+        float offset = (length * 0.5f) + 0.5f;
 
         parent = new GameObject("Map");
         Vector3 basePosition = Vector3.zero - new Vector3(offset, offset);
         for (int x = 0; x < length; x++) {
             for (int y = 0; y < length; y++) {
-                Vector3 newPosition = basePosition + new Vector3((x + 1) * Scale(), (y + 1) * Scale(), 0);
+                Vector3 newPosition = basePosition + new Vector3((x + 1), (y + 1), 0);
                 CharacterToRenderedTile(map[x,y], newPosition);
             }
         }
@@ -75,10 +75,7 @@ public class MapController : MonoBehaviour
     /// The scale of items in the scene.
     /// </summary>
     /// <returns>The appropriate <c>float</c> mutliplier for scaling</returns>
-    public static float Scale() {
-        // TODO: Improve the logic here for better scaling
-        return DEFAULT_SCALE;
-    }
+    public static float Scale => DEFAULT_SCALE * (Screen.width > 800 ? 2.0f : 1.0f);
 
     /// <summary>
     /// Returns whether the given position is traversable.
@@ -192,7 +189,7 @@ public class MapController : MonoBehaviour
         tile.transform.SetParent(parent.transform);
 
         Vector3 scale = tile.transform.localScale;
-        tile.transform.localScale = new Vector3(Scale() * 0.96f, Scale() * 0.96f, 0.2f);
+        tile.transform.localScale = new Vector3(0.96f, 0.96f, 0.2f);
         tile.GetComponent<Renderer>().material.color = new Color(0.494f, 0.784f, 0.314f);
         switch (character)
         {

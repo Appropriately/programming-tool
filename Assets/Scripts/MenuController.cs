@@ -62,7 +62,8 @@ public class MenuController : MonoBehaviour
             position -= new Vector3(0, height * HEIGHT_MULTIPLIER);
         }
 
-        if (Screen.width > 720) HandleDesktopView();
+        if (Screen.width > 800)
+            HandleDesktopView();
     }
 
     #if !UNITY_WEBGL

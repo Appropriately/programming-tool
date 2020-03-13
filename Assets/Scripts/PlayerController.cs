@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private Dictionary<char, char> activateChar = new Dictionary<char, char>() { {'1','A'}, {'2','B'}, {'3','C'} };
 
-    public void Start() => transform.localScale *= (MapController.Scale() * 0.75f);
+    public void Start() => transform.localScale *= 0.75f;
 
     public void Setup() {
         if (controller is null) {
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     public void MoveForward() {
         var (x, y) = FrontCoordinates();
         if (mapController.IsTraversable(x, y)) {
-            targetPosition = targetPosition + (DirectionToVector(direction) * MapController.Scale());
+            targetPosition = targetPosition + (DirectionToVector(direction) * MapController.Scale);
             coordinateX = x;
             coordinateY = y;
         } else {
