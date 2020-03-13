@@ -1,6 +1,6 @@
 {
-"companyName": "DefaultCompany",
-"productName": "programming-tool",
+"companyName": "SeanLewis",
+"productName": "puzzleCode",
 "productVersion": "0.1",
 "dataUrl": "Game.data.unityweb",
 "wasmCodeUrl": "Game.wasm.code.unityweb",
