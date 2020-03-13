@@ -39,8 +39,9 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Update() {
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * MOVEMENT_SPEED);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * ROTATION_SPEED);
+        float multiplier = controller.IsFastForwarded ? Node.FAST_FORWARD_MULTIPLIER * Time.deltaTime : Time.deltaTime;
+        transform.position = Vector3.Lerp(transform.position, targetPosition, multiplier * MOVEMENT_SPEED);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, multiplier * ROTATION_SPEED);
     }
 
     public void Reset() {

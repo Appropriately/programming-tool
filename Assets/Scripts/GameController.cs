@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
     [Header("Buttons")]
     public Button bin;
     public Button home;
+    public Button fastForward;
     public Sprite binOpen, binClosed;
 
     public GameObject nodeButtonTemplate;
@@ -38,6 +39,8 @@ public class GameController : MonoBehaviour
     [Header("Other")]
 
     public bool isDragging = false;
+
+    private bool isFastForwarded = false;
 
     private GameObject[] nodeButtons;
     private List<GameObject> nodes;
@@ -82,7 +85,10 @@ public class GameController : MonoBehaviour
 
             SetupPlayButton();
             UpdateScoreIndicator();
+
+            // Setup relevant onClick listeners
             home.onClick.AddListener(() => LevelManager.GoToMainMenu());
+            fastForward.onClick.AddListener(FastForward);
             editButton.onClick.AddListener(ToggleMode);
         } catch (System.Exception e) {
             #if UNITY_EDITOR
@@ -110,9 +116,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     /// <param name="location">The location that needs checking</param>
     /// <returns>Whether the location is within the editor's bounds</returns>
-    public bool ValidLocation(Vector3 location) {
-        return editorBounds.Contains(location);
-    }
+    public bool ValidLocation(Vector3 location) => editorBounds.Contains(location);
 
     /// <summary>
     /// Iterates through each "player" and determines whether they have reached an exit.
@@ -131,6 +135,8 @@ public class GameController : MonoBehaviour
     /// Returns the number of nodes in the current solution, including the <c>startNode</c>.
     /// </summary>
     public int NodeCount => nodes.Count;
+
+    public bool IsFastForwarded { get => isFastForwarded; set => isFastForwarded = value; }
 
     /// <summary>
     /// Handles <c>Node</c> deletion and removal from the nodes array.
@@ -152,6 +158,11 @@ public class GameController : MonoBehaviour
         Image binImage = bin.GetComponent<Image>();
         binImage.sprite = ValidLocation(position) ? binClosed : binOpen;
     }
+
+    /// <summary>
+    /// Returns whether the play mode is fast forwarded.
+    /// </summary>
+    public bool fastForwarded => state == State.Playing && isFastForwarded;
 
     /// <summary>
     /// Update's the score display, determining whether it should be shown and what value to show.
@@ -314,19 +325,27 @@ public class GameController : MonoBehaviour
     private void ToggleMode()
     {
         if (IsStopped) {
+            // Disable buttons and UI elements
             runButton.gameObject.SetActive(false);
-            score.SetActive(false);
-            editButton.GetComponent<Image>().sprite = test;
-            foreach (GameObject button in nodeButtons) button.SetActive(true);
-            state = State.Editor;
             home.gameObject.SetActive(false);
+            score.SetActive(false);
+
+            foreach (GameObject button in nodeButtons)
+                button.SetActive(true);
+
+            editButton.GetComponent<Image>().sprite = test;
+            state = State.Editor;
         } else if (IsInEditor) {
+            // Enable relevant buttons and UI elements
             runButton.gameObject.SetActive(true);
+            home.gameObject.SetActive(true);
+
+            foreach (GameObject button in nodeButtons)
+                button.SetActive(false);
+
             UpdateScoreIndicator();
             editButton.GetComponent<Image>().sprite = edit;
-            foreach (GameObject button in nodeButtons) button.SetActive(false);
             state = State.Stopped;
-            home.gameObject.SetActive(true);
         }
     }
 
@@ -436,9 +455,11 @@ public class GameController : MonoBehaviour
         runButton.onClick.RemoveAllListeners();
         editButton.gameObject.SetActive(false);
         home.gameObject.SetActive(false);
+        fastForward.gameObject.SetActive(true);
 
         SetupStopButton();
 
+        IsFastForwarded = false;
         SetRunning(true);
         StartCoroutine(startNode.Run());
     }
@@ -457,6 +478,16 @@ public class GameController : MonoBehaviour
         player.Reset();
         editButton.gameObject.SetActive(true);
         home.gameObject.SetActive(true);
+        fastForward.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Utility function for toggling a fast forward.
+    /// </summary>
+    private void FastForward()
+    {
+        isFastForwarded = true;
+        fastForward.gameObject.SetActive(false);
     }
 
     private void SetupPlayButton()
