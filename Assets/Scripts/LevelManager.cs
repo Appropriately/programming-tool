@@ -25,7 +25,7 @@ public static class LevelManager
     {
         if (names.Count <= 0)
         {
-            Add ("move", "EX\nSX", new Block[]{ Block.Move, Block.Speak });
+            Add ("learn_to_move", "EX\nSX", new Block[]{ Block.Move, Block.Speak });
             Add ("move_twice", "XXX\nSOE\nXXX", new Block[]{ Block.Move, Block.Speak });
             Add (
                 "loop_move", "XXXEXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXOXXX\nXXXSXXX",
@@ -38,11 +38,40 @@ public static class LevelManager
             );
             Add ("left_and_right", "XEX\nXOO\nXXS", new Block[]{ Block.Move, Block.RotateRight, Block.RotateLeft });
             Add (
+                "big_space", "OOOOS\nOOOOO\nOOOOO\nOOOOO\nEOOOO",
+                new Block[]{ Block.Move, Block.RotateRight, Block.RotateLeft, Block.WhileNotAtExit }
+            );
+            Add (
                 "rotates_with_conditional", "OOOOO\nOXXXO\nOXXXO\nOXXXO\nSXXXE",
-                new Block[]{Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit}
+                new Block[]{ Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit }
+            );
+            Add (
+                "spiral_path", "OOOOOOO\nOXXXXXO\nOXOOOXO\nOXOXOXO\nOXOXEXO\nOXOXXXO\nSXOOOOO",
+                new Block[]{ Block.Move, Block.RotateRight, Block.IfSpaceIsTraversable, Block.WhileNotAtExit }
             );
             Add ("interact", "1XX\nOAE\nSXX", new Block[] { Block.Move, Block.RotateRight, Block.Interact });
             Add ("long_route", "OOOO\nS1XO\nAXXO\nEOOO", new Block[]{ Block.Move, Block.RotateRight, Block.Interact });
+            Add (
+                "delayed_interaction", "X1XXXX\nXOAAAE\nXOXXXX\nXOXXXX\nXOXXXX\nXSXXXX",
+                new Block[]{
+                    Block.Move, Block.RotateRight, Block.Interact, Block.WhileTraversable, Block.WhileNotAtExit
+                }
+            );
+            Add (
+                "two_options", "XXXXXXX\nXBBBBEX\nXBXXXAX\nXBBXXAX\nXXBXXAX\nX2SAAAX\nXX1XXXX",
+                new Block[]{
+                    Block.Move, Block.RotateRight, Block.RotateLeft,
+                    Block.WhileNotAtExit, Block.WhileTraversable, Block.IfSpaceIsTraversable,
+                    Block.Interact
+                }
+            );
+            Add (
+                "a_three_step_process", "XXXEXXX\nXXXCXXX\nXXXB3XX\nXXXA2XX\nXXXO1XX\nXXXSXXX",
+                new Block[]{
+                    Block.Move, Block.RotateRight, Block.RotateLeft, Block.WhileNotAtExit, Block.WhileTraversable,
+                    Block.IfSpaceIsTraversable, Block.Interact
+                }
+            );
         }
     }
 

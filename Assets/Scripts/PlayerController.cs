@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 targetPosition;
     private Quaternion targetRotation;
 
-    private Dictionary<char, char> activateChar = new Dictionary<char, char>() { {'1','A'}, {'2','B'} };
+    private Dictionary<char, char> activateChar = new Dictionary<char, char>() { {'1','A'}, {'2','B'}, {'3','C'} };
 
     public void Start() => transform.localScale *= (MapController.Scale() * 0.75f);
 

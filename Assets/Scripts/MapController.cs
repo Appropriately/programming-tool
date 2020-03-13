@@ -14,8 +14,8 @@ public class MapController : MonoBehaviour
     public const char NORMAL_TILE = 'O';
 
     private const float DEFAULT_SCALE = 1.0f;
-    private static readonly char[] activatableChars = { 'A', 'B' };
-    private static readonly char[] buttonChars = { '1', '2' };
+    private static readonly char[] activatableChars = { 'A', 'B', 'C' };
+    private static readonly char[] buttonChars = { '1', '2', '3' };
 
     public char[,] map;
     public GameObject endObject;
