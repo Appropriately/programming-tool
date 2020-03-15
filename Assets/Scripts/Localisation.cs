@@ -94,7 +94,7 @@ public static class Localisation
     private static void Parse(Dictionary<string, string> dictionary, SystemLanguage language)
     {
         TextAsset textFile = Resources.Load<TextAsset>($"{LOCALISATION_FOLDER}{SystemLanguageToIso(language)}");
-        if (textFile.text == null)
+        if (textFile == null)
             return;
 
         List<string> lines = new List<string>(textFile.text.Split(
@@ -179,7 +179,7 @@ public static class Localisation
 			case SystemLanguage.Turkish: return "tr";
 			case SystemLanguage.Ukrainian: return "uk";
 			case SystemLanguage.Vietnamese: return "vi";
-            default: return "EN";
+            default: return "en";
 		}
     }
 }

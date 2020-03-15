@@ -27,12 +27,6 @@ namespace Tests
             Assert.IsFalse(Localisation.IsInitialized);
         }
 
-        [Test, Description("Initializing without clearing throws an ArgumentException")]
-        public void CallInitializeWithoutClearing_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => Localisation.Initialize(SystemLanguage.Japanese));
-        }
-
         // -------------------------------------------------------------------------------------------------------- //
         // Test translation of tokens
         // -------------------------------------------------------------------------------------------------------- //
