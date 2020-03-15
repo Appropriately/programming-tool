@@ -34,3 +34,13 @@ hint_2;You can drag nodes from the buttons on the right.
 comment_1;Help the mouse can get the cheese!
 
 about_game;'puzzleCode' teaches programming concepts through the use of puzzles.\n\nThe aim of the game is to get the mouse to to the cheese. You combine blocks together in order to form instructions for the mouse to follow.\n\nDesigned and built by\ngithub.com/appropriately/.
+
+default_game_speed;Default game speed
+icon_colours;Icon's colours
+
+slow;Slow
+normal;Regular
+fast;Fast
+none;None
+colourful;Colourful
+black_and_white;Black & white

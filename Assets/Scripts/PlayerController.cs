@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Update() {
-        float multiplier = controller.IsFastForwarded ? Node.FAST_FORWARD_MULTIPLIER * Time.deltaTime : Time.deltaTime;
+        float multiplier = controller.GameSpeed() * Time.deltaTime;
         transform.position = Vector3.Lerp(transform.position, targetPosition, multiplier * MOVEMENT_SPEED);
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, multiplier * ROTATION_SPEED);
     }
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     public void MoveForward() {
         var (x, y) = FrontCoordinates();
         if (mapController.IsTraversable(x, y)) {
-            targetPosition = targetPosition + (DirectionToVector(direction) * MapController.Scale);
+            targetPosition = targetPosition + (DirectionToVector(direction));
             coordinateX = x;
             coordinateY = y;
         } else {

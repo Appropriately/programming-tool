@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,20 +12,26 @@ public class MenuController : MonoBehaviour
     /// The first one will be initialized over this so it is expected to be inactive.
     /// </summary>
     public GameObject template;
+    public GameObject dropdownTemplate;
 
     [Header("Content")]
     public GameObject scrollViewContent;
+
+    [Header("Buttons")]
     public GameObject closeButton;
     public GameObject aboutButton;
+    public GameObject settingsButton;
 
     [Header("Groups")]
     public GameObject mainMenu;
     public GameObject aboutMenu;
+    public GameObject settingsMenu;
 
     private enum State
     {
         LevelSelect,
-        About
+        About,
+        Settings
     }
 
     private State currentState = State.LevelSelect;
@@ -52,6 +57,9 @@ public class MenuController : MonoBehaviour
         aboutButton.GetComponent<Button>().onClick.AddListener(() => ChangeState(State.About));
         aboutMenu.GetComponentInChildren<Text>().text = Localisation.Translate("about_game");
 
+        settingsButton.GetComponent<Button>().onClick.AddListener(() => ChangeState(State.Settings));
+        GenerateSettingsMenu();
+
         Vector3 position = template.GetComponent<RectTransform>().position;
         float height = template.GetComponent<RectTransform>().sizeDelta.y;
         Invoke("UpdateScrollViewSize", 0.02f);
@@ -64,6 +72,8 @@ public class MenuController : MonoBehaviour
 
         if (Screen.width > 800)
             HandleDesktopView();
+
+        ChangeState(State.LevelSelect);
     }
 
     #if !UNITY_WEBGL
@@ -91,9 +101,9 @@ public class MenuController : MonoBehaviour
     }
 
     /// <summary>
-    ///
+    /// Utility function for setting and adjusting the look of the UI depending on the given <c>State</c>.
     /// </summary>
-    /// <param name="state"></param>
+    /// <param name="state">The <c>State</c> that needs to be changed to</param>
     private void ChangeState(State state)
     {
         bool isMainMenu = state is State.LevelSelect;
@@ -101,6 +111,7 @@ public class MenuController : MonoBehaviour
         closeButton.SetActive(!isMainMenu);
 
         aboutMenu.SetActive(state is State.About);
+        settingsMenu.SetActive(state is State.Settings);
         currentState = state;
     }
 
@@ -158,5 +169,25 @@ public class MenuController : MonoBehaviour
         RectTransform rectangle = scrollViewContent.transform.parent.transform.parent.GetComponent<RectTransform>();
         rectangle.sizeDelta = new Vector2(rectangle.sizeDelta.x, Screen.height);
         rectangle.position = new Vector3(rectangle.position.x, Screen.height * 0.5f, rectangle.position.z);
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    private void GenerateSettingsMenu()
+    {
+        RectTransform rect = dropdownTemplate.GetComponent<RectTransform>();
+        Vector3 position = rect.position;
+        float height = rect.sizeDelta.y;
+
+        GameObject dropdown;
+        foreach (KeyValuePair<string, List<string>> setting in SettingsManager.settings)
+        {
+            dropdown = Instantiate(dropdownTemplate, position, Quaternion.identity, dropdownTemplate.transform.parent);
+            dropdown.GetComponent<MenuDropdown>().Initialize(setting.Key, setting.Value);
+            dropdown.SetActive(true);
+            position -= new Vector3(0, height * 1.05f);
+        }
+
     }
 }

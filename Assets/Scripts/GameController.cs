@@ -39,8 +39,8 @@ public class GameController : MonoBehaviour
     [Header("Other")]
 
     public bool isDragging = false;
-
     private bool isFastForwarded = false;
+    private bool sessionSupportsIconColours = true;
 
     private GameObject[] nodeButtons;
     private List<GameObject> nodes;
@@ -77,7 +77,17 @@ public class GameController : MonoBehaviour
             player.Setup();
             map.Reset();
 
+            if (SettingsManager.GetString("icon_colours") == "black_and_white")
+                sessionSupportsIconColours = false;
+
             startNode.GetComponentInChildren<TextMesh>().text = Localisation.Translate("on", true);
+            if (sessionSupportsIconColours) {
+                startNode.GetComponentInChildren<SpriteRenderer>().color = playColour;
+                fastForward.GetComponentInChildren<Image>().color = new Color(0.24f, 0.28f, 0.61f);
+                bin.GetComponentInChildren<Image>().color = new Color(0.6f, 0.6f, 0.6f);
+                editButton.GetComponentInChildren<Image>().color = new Color(0.06f, 0.7f, 1);
+            }
+
             nodes = new List<GameObject>{ startNode.gameObject };
 
             SetupNodeButtonTemplate();
@@ -142,8 +152,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     public int NodeCount => nodes.Count;
 
-    public bool IsFastForwarded { get => isFastForwarded; set => isFastForwarded = value; }
-
     /// <summary>
     /// Handles <c>Node</c> deletion and removal from the nodes array.
     /// </summary>
@@ -166,9 +174,21 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns whether the play mode is fast forwarded.
+    /// Determines the multiplier on the game's current speed.
+    /// Pulls the <c>default_game_speed</c> from settings and returns a <c>float</c> representation of the value.
     /// </summary>
-    public bool fastForwarded => state == State.Playing && isFastForwarded;
+    /// <returns>A multiplier for the game's speed</returns>
+    public float GameSpeed()
+    {
+        float fastForward = (state == State.Playing && isFastForwarded) ? 4.0f : 1.0f;
+        switch (SettingsManager.GetString("default_game_speed"))
+        {
+            case "slow": return 0.5f * fastForward;
+            case "fast": return 2.0f * fastForward;
+            default: return 1.0f * fastForward;
+        }
+
+    }
 
     /// <summary>
     /// Update's the score display, determining whether it should be shown and what value to show.
@@ -268,7 +288,9 @@ public class GameController : MonoBehaviour
 
         Image image = button.GetComponentsInChildren<Image>()[1];
         image.sprite = sprite;
-        image.color = colour;
+
+        if (sessionSupportsIconColours)
+            image.color = colour;
 
         EventTrigger trigger = button.GetComponent<EventTrigger>();
         EventTrigger.Entry drag = new EventTrigger.Entry();
@@ -439,7 +461,10 @@ public class GameController : MonoBehaviour
 
         node.AddComponent(type);
         textMesh.text = text;
-        image.color = colour;
+
+        if (sessionSupportsIconColours)
+            image.color = colour;
+
         image.sprite = sprite;
 
         if (scale > 1.0f) {
@@ -479,7 +504,7 @@ public class GameController : MonoBehaviour
 
         SetupStopButton();
 
-        IsFastForwarded = false;
+        isFastForwarded = false;
         SetRunning(true);
         StartCoroutine(startNode.Run());
     }
@@ -514,7 +539,10 @@ public class GameController : MonoBehaviour
     {
         runButton.onClick.AddListener(StartRun);
         Image image = runButton.GetComponent<Image>();
-        image.color = playColour;
+
+        if (sessionSupportsIconColours)
+            image.color = playColour;
+
         image.sprite = play;
     }
 
@@ -522,7 +550,10 @@ public class GameController : MonoBehaviour
     {
         runButton.onClick.AddListener(StopRun);
         Image image = runButton.GetComponent<Image>();
-        image.color = stopColour;
+
+        if (sessionSupportsIconColours)
+            image.color = stopColour;
+
         image.sprite = stop;
     }
  }

@@ -11,8 +11,6 @@ public abstract class Node : MonoBehaviour
     public GameController controller;
     public Node child, parent;
 
-    public const float FAST_FORWARD_MULTIPLIER = 4.0f;
-
     /// <summary>
     /// Performs <c>Node</c> specific functionality.
     /// Calls upon the <c>NodeFunction</c> function which has specific functionality depending on the node.
@@ -31,7 +29,7 @@ public abstract class Node : MonoBehaviour
         #endif
 
         Node node = NodeFunction();
-        yield return new WaitForSeconds(0.5f / (controller.IsFastForwarded ? 4.0f : 1.0f));
+        yield return new WaitForSeconds(0.5f / (controller.GameSpeed()));
 
         if (node is null) {
             node = IsInLoop();
