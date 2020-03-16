@@ -7,11 +7,7 @@ namespace Tests
     public class LocalisationTests
     {
         [SetUp]
-        public void Setup()
-        {
-            Localisation.Clear();
-            Localisation.Initialize(SystemLanguage.English);
-        }
+        public void Setup() => Localisation.Initialize(SystemLanguage.English);
 
         // -------------------------------------------------------------------------------------------------------- //
         // Initialization tests

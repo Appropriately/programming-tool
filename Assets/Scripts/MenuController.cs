@@ -43,16 +43,6 @@ public class MenuController : MonoBehaviour
 
     public void Start()
     {
-        LevelManager.Seed();
-        if (Localisation.IsInitialized is false)
-        {
-            #if UNITY_EDITOR
-                Localisation.Initialize(SystemLanguage.English);
-            #else
-                Localisation.Initialize(Application.systemLanguage);
-            #endif
-        }
-
         closeButton.GetComponent<Button>().onClick.AddListener(() => ChangeState(State.LevelSelect));
         aboutButton.GetComponent<Button>().onClick.AddListener(() => ChangeState(State.About));
         aboutMenu.GetComponentInChildren<Text>().text = Localisation.Translate("about_game");

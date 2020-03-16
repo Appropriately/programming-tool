@@ -22,6 +22,17 @@ public static class Localisation
     private static Dictionary<string, string> english = new Dictionary<string, string>();
     private static Dictionary<string, string> userLanguage = new Dictionary<string, string>();
 
+    static Localisation()
+    {
+        Clear();
+        if (IsInitialized is false)
+            #if UNITY_EDITOR
+                Initialize(SystemLanguage.Romanian);
+            #else
+                Initialize(Application.systemLanguage);
+            #endif
+    }
+
     /// <summary>
     /// Set up the localisation manager.
     /// Pulls the user's native locale and sets up the appropriate dictionary

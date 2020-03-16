@@ -115,6 +115,11 @@ public static class LevelManager
     public static string GetMapForID(int id) => maps[id];
     public static Block[] GetBlocksForID(int id) => blocks[id];
 
+    static LevelManager()
+    {
+        Seed();
+    }
+
     /// <summary>
     /// Given an <c>id</c> representation some scene, calculate the complexity.
     /// Complexity depends on a number of factors such as how many buttons are used and the size of the level.

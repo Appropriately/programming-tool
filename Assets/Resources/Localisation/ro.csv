@@ -1,3 +1,43 @@
 on;Când
 
+rotate;Rotește
+if;Dacă
+speak;Vorbește
+until;Până când
+while;Cât timp
+interact;Interacționează
+move;Mișcă
+
+easy;Ușor
+intermediate;Intermediar
+hard;Dificil
+
+learn_to_move;Învață să te miști
+move_twice;Mișcă-te de două ori
+which_exit;Care ieșire?
+left_and_right;Stânga /și/ dreapta
+big_space;Spațiu mare
+rotates_with_conditional;Rotire condiționată
+spiral_path;Cale spiralată
+interact;Învață să interacționezi
+long_route;/Ruta lungă/
+delayed_interaction;Interacțiune întârziată
+two_options;Două opțiuni
+a_three_step_process;Un proces cu TREI pași
+
 language;Română
+
+hint_1;Poți conecta două noduri!
+hint_2;Poți trage noduri din butoanele din dreapta.
+comment_1;Ajută șoarecele ce să obțină brânza!
+
+about_game;'puzzleCode' învață concepte de programare prin intermediul puzzle-urilor. \n\nScopul jocului este să ajuți șoarecele să ajungă la brânză. Combini blocuri pentru a forma instrucțiuni pe care șoarecele să le urmeze.\n\nProiectat și creat de\ngithub.com/appropriately/.
+
+default_game_speed;Viteza implicită a jocului
+icon_colours;Culorile icoanelor
+
+slow;Încet
+fast;Rapid
+none; Nici una
+colourful;Colorat
+black_and_white;Alb și negru
