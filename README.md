@@ -1,11 +1,21 @@
 # Programming Tool
 
+> A playable version of the game (using WebGL) can be found on the [project's site](https://appropriately.github.io/programming-tool/).
+
 ## About
 
 A tool built in Unity to teach people how to program. Focuses on the main programming concepts like __conditionals__ and __loops__ rather than teaching actual programming languages. Additionally, it teaches through the use of puzzles. New programming "nodes" are included in each level to slowly introduce the new concepts
 
 > ![Early version of a complex level design](docs/images/complex_level.png)</br>
 > Early version of a complex level, before any graphics were included
+
+## Setup
+
+1. Install the Unity game engine
+   - The project was built for Unity version `2019.3`, but later versions should also be supported.
+2. Clone the project into Unity's project folder `git clone git@github.com:Appropriately/programming-tool.git`.
+3. Run Unity and open the project.
+   - Dependencies should be automatically pulled.
 
 ## Features
 
