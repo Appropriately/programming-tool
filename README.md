@@ -9,6 +9,13 @@ A tool built in Unity to teach people how to program. Focuses on the main progra
 > ![Early version of a complex level design](docs/images/complex_level.png)</br>
 > Early version of a complex level, before any graphics were included
 
+Some of the key folders in the project are:
+
+- `docs/` contains project documentation as well as the GitHub pages
+- `Assets/` is where all of the code for the project lies
+  - `Assets/Tests` holds both Play and Edit mode test suites
+  - `Assets/Scripts` contains all the scripts that were written by me, to interact with **GameObjects**.
+
 ## Setup
 
 1. Install the Unity game engine
