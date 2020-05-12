@@ -14,10 +14,6 @@ using UnityEngine;
 /// </summary>
 public static class Localisation
 {
-    /// <summary>
-    /// The location of the localisation <c>CSV</c> files
-    /// </summary>
-    private const string LOCALISATION_FOLDER = "Localisation/";
 
     private static Dictionary<string, string> english = new Dictionary<string, string>();
     private static Dictionary<string, string> userLanguage = new Dictionary<string, string>();
@@ -104,7 +100,7 @@ public static class Localisation
     /// <param name="language">The <c>SystemLanguage</c> to be used for translation</param>
     private static void Parse(Dictionary<string, string> dictionary, SystemLanguage language)
     {
-        TextAsset textFile = Resources.Load<TextAsset>($"{LOCALISATION_FOLDER}{SystemLanguageToIso(language)}");
+        TextAsset textFile = Resources.Load<TextAsset>(Path.Combine("localisation", SystemLanguageToIso(language)));
         if (textFile == null)
             return;
 
